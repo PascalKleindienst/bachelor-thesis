@@ -1,0 +1,146 @@
+% **************************************************************************************************************
+% A Classic Thesis Style
+% An Homage to The Elements of Typographic Style
+%
+% Copyright (C) 2015 André Miede http://www.miede.de
+% TUC-specific modifications in 2016 by Andreas Reinhardt 
+%
+% License:
+% This program is free software; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% **************************************************************************************************************
+
+\RequirePackage{fix-cm} % fix some latex issues see: http://texdoc.net/texmf-dist/doc/latex/base/fixltx2e.pdf
+\documentclass[ twoside,openright,titlepage,numbers=noenddot,headinclude,
+                footinclude=true,cleardoublepage=empty,abstractoff, 
+                BCOR=5mm,paper=a4,fontsize=11pt,11pt,a4paper,%
+                ngerman,american,%
+                ]{scrreprt}
+
+\usepackage{minted}
+\usemintedstyle{emacs}
+
+\newminted[sqlcode]{mysql}{
+	fontfamily=tt,
+	linenos=true
+}
+\newminted[pythoncode]{python}{
+	fontfamily=tt,
+	linenos=true,
+	%numberblanklines=true,
+	%numbersep=12pt,
+	%numbersep=5pt,
+	%gobble=0,
+	%frame=leftline,
+	%framerule=0.4pt,
+	%framesep=2mm,
+	%funcnamehighlighting=true,
+	%tabsize=4,
+	%obeytabs=false,
+	%mathescape=false
+	%samepage=false, %with this setting you can force the list to appear on the same page
+	%showspaces=false,
+	%showtabs =false,
+	%texcl=false,
+}
+
+%%********************************************************************
+%% Get user-specific configuration
+%%*******************************************************
+\input{thesis-config}
+
+\usepackage{pgfplots}
+\usepackage{csvsimple}
+\usepgfplotslibrary{units}
+
+%% Save plots as pdf vectors
+%\usetikzlibrary{external} 
+%\tikzexternalize[prefix=tikz/]
+
+%%********************************************************************
+%% Define bibliography input files (BibTeX)
+%%*******************************************************
+%\addbibresource{Bibliography.bib}
+\bibliography{Bibliography.bib}
+
+%%********************************************************************
+%% Hyphenation
+%%*******************************************************
+\hyphenation{Rein-hardt an-aly-sis Sammel-karten-spielen}
+
+%% ********************************************************************
+%% GO!GO!GO! MOVE IT!
+%%*******************************************************
+\begin{document}
+
+%% Some basic formatting 
+\frenchspacing 
+\raggedbottom 
+\pagenumbering{roman}
+\pagestyle{plain} 
+\newcounter{dummy} % necessary for correct hyperlinks (to index, bib, etc.)
+
+%% Uncomment one of the following options, according to thesis language.
+\selectlanguage{ngerman}\renewcommand*{\bibname}{Literaturverzeichnis}
+%\selectlanguage{american}
+
+
+%%********************************************************************
+%% Frontmatter
+%%*******************************************************
+\include{FrontBackmatter/Titlepage}
+\include{FrontBackmatter/Titleback}
+\cleardoublepage\include{FrontBackmatter/Declaration}
+\cleardoublepage\include{FrontBackmatter/Abstract}
+
+%% Acknowledgments (Danksagung) can be left out if not needed
+%\cleardoublepage\include{FrontBackmatter/Acknowledgments}
+
+\pagestyle{scrheadings}
+
+%% HINT: List of tables/figures/listings/acronyms can be uncommented in FrontBackmatter/Contents.tex
+\cleardoublepage\include{FrontBackmatter/Contents} 
+
+%%********************************************************************
+%% Mainmatter
+%%*******************************************************
+\cleardoublepage\pagenumbering{arabic}\cleardoublepage
+
+\include{sections/10-Einleitung}
+%\include{sections/15-Related-Work}
+\include{sections/20-Grundlagen}
+\include{sections/30-Methode} %%% Evtl aufspalten in "Analyse" und "Design und Realisierung"
+\include{sections/40-Ergebnisse} 
+\include{sections/50-Zusammenfassung} 
+ 
+%\include{sections/section01}
+%
+%\include{sections/section02}
+%
+%\include{sections/section03}
+%
+%\include{sections/section04}
+%
+%%********************************************************************
+%% Other Stuff in the Back
+%%*******************************************************
+\cleardoublepage
+\include{FrontBackmatter/Bibliography}
+
+%% Uncomment following lines if an appendix is needed
+% \appendix\cleardoublepage
+% \include{sections/appendix}
+
+%% ********************************************************************
+%% Game Over: Restore, Restart, or Quit?
+%%*******************************************************
+\end{document}
+%% ********************************************************************
