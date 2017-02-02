@@ -1,0 +1,6 @@
+Test,Test Key,Size,Neo4j,Neo4j error,MySQL,MySQL error,Memory (MB)
+Test 3,complex-card-search,15000,125.5850,9.48998,60.2748,6.8150,135.055
+Test 3,complex-card-search,100000,190.462,23.2061,61.6055,7.412,133.887
+Test 3,complex-card-search,250000,484.847,24.299,62.5587,7.38693,134.684
+Test 3,complex-card-search,500000,1084.44,56.0833,69.4591,19.6015,135.107
+Test 3,complex-card-search,1000000,2088.84,81.4667,70.5256,9.53456,134.003

@@ -1,0 +1,5 @@
+Test,Test Key,Size,Neo4j,Neo4j error,MySQL,MySQL error,Memory (MB)
+Test 1,simple-keyword-ability-search,1000000,104.4087,15.8059,71.5788,11.8775,145.621
+Test 2,simple-artist-card-search,1000000,617.533,22.4907,52.1035,12.26081,126.631
+Test 3,complex-card-search,1000000,2088.84,81.4667,70.5256,9.53456,134.003
+Test 4,matchup,1000000,82.4126,13.8932,867.941,103.623,122.97

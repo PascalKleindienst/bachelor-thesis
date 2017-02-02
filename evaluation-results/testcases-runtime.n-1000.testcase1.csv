@@ -1,0 +1,6 @@
+Test,Test Key,Size,Neo4j,Neo4j error,MySQL,MySQL error,Memory (MB)
+Test 1,simple-keyword-ability-search,15000,89.0865,10.29330,63.8553,6.7512,147.676
+Test 1,simple-keyword-ability-search,100000,92.1409,9.65666,64.201,6.07156,156.656
+Test 1,simple-keyword-ability-search,250000,92.4346,10.4864,66.9383,7.28569,141.383
+Test 1,simple-keyword-ability-search,500000,99.149,14.8841,73.5363,20.0964,148.441
+Test 1,simple-keyword-ability-search,1000000,104.4087,15.8059,71.5788,11.8775,145.621
