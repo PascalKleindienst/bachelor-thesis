@@ -1,0 +1,48 @@
+% !TEX root = ../TUCthesis.tex
+%****************************************************
+\section{Ausgewählter Ansatz und Detaillösungen}\label{ch:ansatz}
+%****************************************************
+
+\subsection{Datenbasis}
+Als Basis der Kartendaten wird mtgjson\footnote{http://mtgjson.com} benutzt, welche \ac{MtG} Kartendaten als \ac{JSON} bereitstellt. Die Decks hingegen werden von mtgtop8\footnote{http://mtgtop8.com} bezogen.
+
+\subsection{Datenbanken}
+Als Graph-Datenbank wird \emph{Neo4j} eingesetzt, da diese eine hoch skalierbare Datenbank ist, welche auf allen gängigen Betriebssystemen läuft \cite{goel2015neo4j}. Des Weiteren besitzt Neo4j mit \emph{Cypher} eine ausdrucksstarke Abfragesprache. Ein Vorteil von Cypher ist, dass ab Neo4j 2.1 der Import aus \ac{CSV}-Dateien unterstützt wird. \cite{panzarino2014cypher}
+
+%TODO: MariaDB/MySQL
+Als \ac{RDBMS} wird MariaDB\footnote{https://mariadb.com} eingesetzt, welche vom Urheber von MySQL entwickelt wird. MariaDB ist ein Fork von MySQL und gilt als dessen evolutionäre Nachfolger. \cite{bartholomew2013getting}
+
+\subsubsection{Import der Daten}
+Da eine große Menge an Daten importiert werden müssen, zum Beispiel über 90.000 Übersetzungen, ist eine schnelle Import-Funktion hilfreich. In \autoref{listing:cypher.import.csv} befindet sich ein Kommando, um Übersetzungen nach Neo4j zu importieren und in \autoref{listing:sql.import.csv} ein Kommando, um nach MySQL zu importieren.
+
+\begin{listing}[H]
+    \caption{Importieren von Übersetzungen}
+    \label{listing:cypher.import.csv}
+    \begin{lstlisting}[language=SQL]
+    USING PERIODIC COMMIT 1000
+    LOAD CSV WITH HEADERS FROM "file:translations.csv" AS row
+    CREATE (:Translation { name: row.name });
+    \end{lstlisting}
+\end{listing}
+
+\begin{listing}[H]
+    \caption{Importieren von Übersetzungen}
+    \label{listing:sql.import.csv}
+    \begin{lstlisting}[language=SQL]
+    LOAD DATA LOCAL INFILE 'translations.csv' INTO TABLE `translations`
+    CHARACTER SET UTF8
+    FIELDS TERMINATED BY ','
+    ENCLOSED BY '"'
+    LINES TERMINATED BY '\r\n'
+    IGNORE 1 LINES
+    SET (@card, name, lang, card_id);
+    \end{lstlisting}
+\end{listing}
+
+\subsection{Programmiersprache}
+Als Programmiersprache wird \emph{PyPy}\footnote{http://pypy.org}, eine alternative \emph{Python} Implementierung, verwendet. Die Vorteile von PyPy sind der integrierte \ac{JIT} Compiler, wodurch sich eine schnellere Ausführungszeit ergibt, und der geringere Speicherverbrauch. \cite{doglio2015mastering} 
+
+\subsubsection{Profiling}
+Mit einem \emph{Profiler} können verschiedene Werte wie \emph{Ausführungszeit} oder \emph{Speicherverbrauch} gemessen werden \cite{doglio2015mastering}. Um vergleichen zu können, wie gut die Datenbanksysteme in den einzelnen Testfällen abschneiden, werden die Ausführungszeit und der Speicherverbrauch gemessen. 
+
+Für die Ausführungszeit kann eine einfache Timer-Klasse\footnote{https://www.huyng.com/posts/python-performance-analysis} benutzt werden. Um den Speicherverbrauch zu messen wird die Python-Bibliothek psutil benutzt\footnote{http://fa.bianp.net/blog/2013/different-ways-to-get-memory-consumption-or-lessons-learned-from-memory\_profiler/}, da diese eine einfache und plattformübergreifende Methode bietet den Speicherverbrauch auszulesen.

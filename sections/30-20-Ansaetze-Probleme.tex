@@ -1,0 +1,49 @@
+% !TEX root = ../TUCthesis.tex
+%****************************************************
+\section{Potentielle Ansätze und Probleme}\label{ch:ansaetze-probleme}
+%****************************************************
+
+\subsection{Relationale Datenbanken}
+%* Ansatz: RDBMS da etabliert -> gut für suche
+% https://books.google.nl/books?id=RTvcCQAAQBAJ&pg=PA1&num=10&hl=de&source=gbs_toc_r&cad=3#v=onepage&q&f=true
+%* Beispiel: komplexe SQL Abfrage *(siehe expose)*
+%* Komplizierte Abfragen / viele JOINs *(Bezug zu Aufbau Karte)*
+% Skalierbarkeit?
+
+Ein Ansatz, welcher sich für kleine Online-Shops eignet, ist die Karten-Daten in einer relationalen Datenbank zu speichern \cite{johnson2013online}. Da ein Online-Shop nur einen Teil der Attribute einer Karte, wie Name, Seltenheit und Set, benötigt, kann das Datenbank Schema aus ein bis zwei Tabellen bestehen, die diese Informationen speichern. Für eine komplexe Suchfunktion, die alle Attribute einer Karte berücksichtigt, eignet sich dieser Ansatz allerdings nicht, da hier viele Tabellen benötigt werden, um die Daten zu speichern. Bei Daten mit vielen Beziehungen untereinander sorgen Relationale Datenbanken für komplexe Abfragen mit vielen JOINS, da diese hoch-strukturierte Daten nicht unterstützen \cite{robinsongraph:2015}. In \autoref{listing:complex.sql} ist beispielhaft eine komplexe Suchanfrage mit 7 benötigten JOINS angegeben.
+
+\begin{listing}[H]
+    \caption{Komplexe SQL-Abfrage}
+    \label{listing:complex.sql}
+    \begin{lstlisting}[language=SQL]
+SELECT * FROM `translations` AS `t` 
+JOIN `cards` ON `cards`.`id` = `t`.`card_id`
+JOIN `cards_in_set` ON `cards_in_set`.`card_id` = `t`.`card_id`
+JOIN `types` ON `cards`.`type_id` = `types`.`id`
+JOIN `card_colors` ON `cards`.`id` = `card_colors`.`card_id`
+JOIN `card_has_ability` ON `cards`.`id` = `card_has_ability`.`card_id`
+JOIN `keyword_abilities` ON `card_has_ability`.`ability_id` = `keyword_abilities`.`id`
+JOIN `sets` ON `sets`.`id` = `cards_in_set`.`set_id`
+WHERE
+    `sets`.release > "2001-01-01" AND
+    `cards_in_set`.`rarity` = "RARE" AND
+    `t`.`lang` = "German" AND
+    `card_colors`.color = "BLUE" AND
+    `types`.`type` = "Creature" AND
+    `keyword_abilities`.`name` = "Flying" AND
+    `cards`.`cmc` <= 5
+    \end{lstlisting}
+\end{listing}
+
+
+\subsection{NoSQL Datenbanken}
+% https://books.google.nl/books?id=RTvcCQAAQBAJ&pg=PA1&num=10&hl=de&source=gbs_toc_r&cad=3#v=onepage&q&f=true
+% S.15 ,S.18-19
+\ac{NoSQL} Datenbanken wie Key-Value-, Document- oder Column-oriented Stores eignen sich nicht für Daten mit vielen Verknüpfungen, da sie die Daten nicht verbunden speichern. Eine Ausnahme sind die Graph-Datenbanken, da sie die Daten als Graph speichern, unterstützen sie daher Daten mit vielen Beziehungen untereinander von vornherein. \cite{robinsongraph:2015}
+
+% TODO
+\cite{jaiswal2013comparative}
+\cite{vicknair2010comparison}
+
+
+
