@@ -41,19 +41,6 @@ Um zu erfahren wie gut die beiden Datenbanken skalieren, wurden außerdem die Te
 %% zB: Testfall X: Suche nach allen Karte die aus Set Y sind und Kriterium Z erfüllen
 %%  -> guter test, da viele Verknpüfungen
 
-% BEISPIEL!
-% Testfall 1: simple-keyword-ability-search -> "A simple search to get the first 300 cards with the keyword ability of 'Flying'"
-% Kartensuche => viele JOINS
-
-% Testfall 2: simple-artist-card-search -> "A simple search for the cards that contain the name 'Forest' and which are either drawn by 'Aleksi Briclot' or 'John Avon'"
-% Kartensuche -> Suche LIKE / CONTAINS
-
-% Testfall 3: matchup -> 
-% Turnier Analyse
-
-% Testfall 4: top 10 decks/players
-% Deck Analyse
-
 \subsection{Testfall 1: Schlüsselwort-Fähigkeit}
 Eine einfache Suche, um die ersten 300 Karten mit dem Schlüsselwort-Fähigkeit \emph{Flying} zu erhalten. Wie in \autoref{fig:uml:schema} zu sehen ist, werden die Fähigkeiten in MySQL in einer eigenen Tabelle gespeichert. In Neo4j hingegen können diese als Attribut von \emph{Card} hinterlegt werden \emph{(siehe \autoref{fig:graph:schema})}, da Neo4j den Datentyp \emph{Array} unterstützt. Mit diesem Test lässt sich also vergleichen wie gut sich Arrays im Vergleich zu joins beim durchsuchen eignen.
     
@@ -80,31 +67,24 @@ Berechnung des Matchup für den Deck-Typ \emph{Bant}. Es werden alle Matches ana
 %%
 %% Graphen! + Berwertung (erwaret/unwartet, weil | DB X besser geeignet weil)
 %%
-%TODO: n=1000
 \subsection{Laufzeit}
-Die gemessenen Laufzeiten samt ihrer Standardabweichung sind in \autoref{fig:plot.runtime} als Fehlerbalkendiagramm und in \autoref{tab:runtime} tabellarisch dargestellt.
-Der große Unterschied in der Laufzeit bei \emph{Testfall 1} lässt sich vermutlich damit erklären, dass bei MySQL für die Keywords zwei Tabellen und damit 2 zusätzliche \emph{JOINS} benötigt werden. Bei Neo4j hingegen sind die Keywords direkt als Array in den Karten-Daten enthalten.
-Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine kürze Laufzeit als MySQL hat.
-
-%TODO: Test 3 -> neo4j langsamer wegen array suche in colors, abilities und types (x in [])
-
-\subsection{Skalierbarkeit}
-%TODO
+Die gemessenen Laufzeiten samt ihrer Standardabweichung sind in \autoref{fig:plot.runtime} als Fehlerbalkendiagramm dargestellt.
+Wie zu erwarten war Neo4j in Testfall 4 schneller als die MySQL-Abfrage mit JOINS. Überraschenderweise war Neo4j auch in Testfall 2 etwas schneller als MySQL, obwohl aufgrund der langjährigen Optimierungen der Textsuche in MySQL zu erwarten war, dass dieser schneller sei.
+Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL liegt vermutlich daran, dass als Datentyp Arrays für \emph{color}, \emph{abilities} und \emph{types} benutzt wurde. Anscheinend ist in Neo4j die Suche innerhalb eines Arrays langsamer als die Suche mit einem JOIN in MySQL.
 
 \begin{figure}[t]
     \myfloatalign
     \begin{tikzpicture} 
         \begin{axis}[
-            width=\linewidth, % Scale the plot to \linewidth
+            width=0.75*\linewidth, % Scale the plot to \linewidth
             grid=major, % Display a grid
             grid style={dashed,gray!30}, % Set the style
             xlabel=Testfälle, % Set the labels
-            ylabel=Zeit,
+            ylabel=Laufzeit,
             use units,
             y unit=ms,
-            legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot             
+            %legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot             
             ybar,
-            enlargelimits=0.15,
             symbolic x coords={Test 1, Test 2, Test 3, Test 4},
             xtick=data,
             %nodes near coords,
@@ -123,27 +103,31 @@ Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine
     \label{fig:plot.runtime}
 \end{figure}
 
-\begin{table}[t]
-    \caption{Gemessene Laufzeiten der Testfälle} 
-    \myfloatalign
-    \csvreader[tabular=lrrrr,table head=\toprule Test & Neo4j (ms) & Neo4j STD (ms) & MySQL (ms) & MySQL STD (ms) \\\midrule,late after last line=\\\bottomrule]%
-    {evaluation-results/testcases-runtime.n-1000.csv}{Test=\test,Neo4j=\neo,Neo4j error=\neostd,MySQL=\mysql,MySQL error=\mysqlstd}%
-    {\test & \neo & \neostd & \mysql & \mysqlstd}%
-    \label{tab:runtime}
-\end{table}
+%\begin{table}[t]
+%    \caption{Gemessene Laufzeiten der Testfälle} 
+%    \myfloatalign
+%    \csvreader[tabular=lrrrr,table head=\toprule Test & Neo4j (ms) & Neo4j STD (ms) & MySQL (ms) & MySQL STD (ms) \\\midrule,late after last line=\\\bottomrule]%
+%    {evaluation-results/testcases-runtime.n-1000.csv}{Test=\test,Neo4j=\neo,Neo4j error=\neostd,MySQL=\mysql,MySQL error=\mysqlstd}%
+%    {\test & \neo & \neostd & \mysql & \mysqlstd}%
+%    \label{tab:runtime}
+%\end{table}
 
+\subsection{Skalierbarkeit}
+Wie in \autoref{fig:plot.scaling.testcase1} zu sehen ist, skalieren sowohl Neo4j als auch MySQL gut, aber auch hier zeigt sich, dass Neo4j in allen gemessenen Größen langsamer ist. Die Vermutung, dass die Suche in Arrays langsamer ist als mit JOINS bestätigt sich in Testfall 3. Wie in  \autoref{fig:plot.scaling.testcase3} zu sehen ist, hat die Laufzeit bei Neo4j ein lineares Wachstum, wohingegen sie bei MySQL relativ konstant bleibt: bei doppelter Menge an Karten, verdoppelt \emph{(ungefähr)} sich die Laufzeit in Neo4j. Es bietet sich an zu überprüfen, ob mit einem anderen Schema, welches auf Arrays verzichtet, Neo4j eine bessere Laufzeit und Skalierbarkeit hat.
 
+In Testfall 2 bestätigt sich, dass MySQL bei der Textsuche optimierter ist als Neo4j, auch wenn Neo4j mit dem normalen Datensatz ein wenig schneller ist. In \autoref{fig:plot.scaling.testcase2} ist zu sehen, dass sich auch hier mit Verdopplung der Karten die Laufzeit der Neo4j-Abfrage um den Faktor 1.5 - 2 steigt, wohingegen die Laufzeit bei MySQL nur um 5\% - 10\% pro gemessenem Punkt steigt. MySQL ist also wie erwartet besser für Textsuchen geeignet als Neo4j.
 
+In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-Abfrage für Testfall 4 ein exponentielles Wachstum hat. Bei der Neo4j Abfrage hingegen steigt die Laufzeit linear, das heißt für Turnier/Matchup-Analysen ist Neo4j besser geeignet als MySQL.
 
 \begin{figure}[t]
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
-        width=0.8*\linewidth, % Scale the plot to \linewidth
+        width=0.70*\linewidth, % Scale the plot to \linewidth
         grid=major, % Display a grid
         grid style={dashed,gray!30}, % Set the style
-        xlabel=Größe Datensatz, % Set the labels
-        ylabel=Zeit,
+        xlabel=\# Karten, % Set the labels
+        ylabel=Laufzeit,
         use units,
         y unit=ms,
         legend pos=north west,
@@ -161,15 +145,15 @@ Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine
     \label{fig:plot.scaling.testcase1}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[H]
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
-        width=0.8*\linewidth, % Scale the plot to \linewidth
+        width=0.70*\linewidth, % Scale the plot to \linewidth
         grid=major, % Display a grid
         grid style={dashed,gray!30}, % Set the style
-        xlabel=Größe Datensatz, % Set the labels
-        ylabel=Zeit,
+        xlabel=\# Karten, % Set the labels
+        ylabel=Laufzeit,
         use units,
         y unit=ms,
         legend pos=north west,
@@ -191,11 +175,11 @@ Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
-        width=0.8*\linewidth, % Scale the plot to \linewidth
+        width=0.70*\linewidth, % Scale the plot to \linewidth
         grid=major, % Display a grid
         grid style={dashed,gray!30}, % Set the style
-        xlabel=Größe Datensatz, % Set the labels
-        ylabel=Zeit,
+        xlabel=\# Karten, % Set the labels
+        ylabel=Laufzeit,
         use units,
         y unit=ms,
         legend pos=north west,
@@ -213,15 +197,15 @@ Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine
     \label{fig:plot.scaling.testcase3}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[H]
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
-        width=0.8*\linewidth, % Scale the plot to \linewidth
+        width=0.70*\linewidth, % Scale the plot to \linewidth
         grid=major, % Display a grid
         grid style={dashed,gray!30}, % Set the style
-        xlabel=Größe Datensatz, % Set the labels
-        ylabel=Zeit,
+        xlabel=\# Turniere, % Set the labels
+        ylabel=Laufzeit,
         use units,
         y unit=ms,
         legend pos=north west,
@@ -238,3 +222,7 @@ Allgemein lässt sich erkennen, dass Neo4j \emph{(mit Ausnahme von Test 3)} eine
     \caption{Skalierung Testfall 4}
     \label{fig:plot.scaling.testcase4}
 \end{figure}
+
+
+\subsection{Speicherverbrauch}
+Der gemessene Speicherverbrauch in MByte unterscheidet sich zwischen MySQL und Neo4j faktisch nicht, das heißt er beträgt weniger als 0.1\%. Des Weiteren bleibt dieser auch bei der Skalierung der Datenbank relativ konstant mit $\pm1$MByte Abweichung. Aus diesem Grund wird hier nicht weiter auf den Speicherverbrauch eingegangen.
