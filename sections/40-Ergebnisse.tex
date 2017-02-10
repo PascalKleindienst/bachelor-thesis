@@ -26,6 +26,7 @@
         Kartensuche: Textsuche & Suche nach einer Zeichenkette die in einem Kartennamen vorkommt\\
         Kartensuche: Verknüpfungen & Suche anhand verschiedener Karten-Attribute \\
         Turnier: Matchup Analyse & Berechne das Matchup eines Deck-Typen \\
+        Turnier: Top 10 Decks & Berechne die 10 besten Decks \\
         \bottomrule 
     \end{tabularx}
     \label{tab:req.tests}
@@ -62,6 +63,8 @@ Eine komplexe Suche nach Karten, welche bestimmte Kriterien erfüllen \emph{(sie
 \subsection{Testfall 4: Matchup Analyse}
 Berechnung des Matchup für den Deck-Typ \emph{Bant}. Es werden alle Matches analysiert an denen ein Deck vom Typ \emph{Bant} beteiligt war und überprüft ob das Deck gewonnen oder verloren hat. Die Ergebnisse werden dann anhand der gegnerischen Deck-Typen gruppiert und geordnet. Insgesamt gibt es im Standard-Testfall 1000 Turniere, die jeweils zwischen 2 und 6 Matches enthalten.  
 
+\subsection{Testfall 5: Top 10 Decks}
+Für jedes Deck wird das Verhältnis zwischen den gewonnen und verlorenen Matches berechnet und dann der Größe nach sortiert und die ersten 10 Decks gewählt. Je höher der Wert ist, desto besser ist das Deck unabhängig von der Anzahl der gespielten Matches. Insgesamt gibt es im Standard-Testfall 1000 Turniere, die jeweils zwischen 2 und 6 Matches enthalten. 
 
 \section{Übersicht und Bewertung der erzielten Ergebnisse}
 %%
@@ -83,12 +86,14 @@ Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL 
             ylabel=Laufzeit,
             use units,
             y unit=ms,
-            %legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot             
+            %legend style={at={(0.5,-0.2)},anchor=north}, % Put the legend below the plot        
+            legend pos=north west,
+            enlarge y limits={upper,value=0.15},
             ybar,
-            symbolic x coords={Test 1, Test 2, Test 3, Test 4},
+            symbolic x coords={Test 1, Test 2, Test 3, Test 4, Test 5},
             xtick=data,
-            %nodes near coords,
-            %nodes near coords align={vertical}
+            nodes near coords,
+            every node near coord/.append style={rotate=90, anchor=west}
         ]
             \addplot+[error bars/.cd,y dir=both,y explicit]
             table[x=Test,y=Neo4j,y error=Neo4j error,col sep=comma]{evaluation-results/testcases-runtime.n-1000.csv};
@@ -113,11 +118,11 @@ Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL 
 %\end{table}
 
 \subsection{Skalierbarkeit}
-Wie in \autoref{fig:plot.scaling.testcase1} zu sehen ist, skalieren sowohl Neo4j als auch MySQL gut, aber auch hier zeigt sich, dass Neo4j in allen gemessenen Größen langsamer ist. Die Vermutung, dass die Suche in Arrays langsamer ist als mit JOINS bestätigt sich in Testfall 3. Wie in  \autoref{fig:plot.scaling.testcase3} zu sehen ist, hat die Laufzeit bei Neo4j ein lineares Wachstum, wohingegen sie bei MySQL relativ konstant bleibt: bei doppelter Menge an Karten, verdoppelt \emph{(ungefähr)} sich die Laufzeit in Neo4j. Es bietet sich an zu überprüfen, ob mit einem anderen Schema, welches auf Arrays verzichtet, Neo4j eine bessere Laufzeit und Skalierbarkeit hat.
+Wie in \autoref{fig:plot.scaling.testcase1} zu sehen ist, skalieren sowohl Neo4j als auch MySQL gut, aber auch hier zeigt sich, dass Neo4j in allen gemessenen Größen langsamer ist. Die Steigung ist bei beiden Datenbanken ungefähr gleich. Die Vermutung, dass die Suche in Arrays langsamer ist als mit JOINS bestätigt sich in Testfall 3. Wie in  \autoref{fig:plot.scaling.testcase3} zu sehen ist, hat die Laufzeit bei Neo4j ein lineares Wachstum, wohingegen sie bei MySQL relativ konstant bleibt: bei doppelter Menge an Karten, verdoppelt \emph{(ungefähr)} sich die Laufzeit in Neo4j. Es bietet sich an zu überprüfen, ob mit einem anderen Schema, welches auf Arrays verzichtet, Neo4j eine bessere Laufzeit und Skalierbarkeit hat.
 
 In Testfall 2 bestätigt sich, dass MySQL bei der Textsuche optimierter ist als Neo4j, auch wenn Neo4j mit dem normalen Datensatz ein wenig schneller ist. In \autoref{fig:plot.scaling.testcase2} ist zu sehen, dass sich auch hier mit Verdopplung der Karten die Laufzeit der Neo4j-Abfrage um den Faktor 1.5 - 2 steigt, wohingegen die Laufzeit bei MySQL nur um 5\% - 10\% pro gemessenem Punkt steigt. MySQL ist also wie erwartet besser für Textsuchen geeignet als Neo4j.
 
-In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-Abfrage für Testfall 4 ein exponentielles Wachstum hat. Bei der Neo4j Abfrage hingegen steigt die Laufzeit linear, das heißt für Turnier/Matchup-Analysen ist Neo4j besser geeignet als MySQL.
+In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-Abfrage für Testfall 4 ein exponentielles Wachstum hat. Bei der Neo4j Abfrage hingegen steigt die Laufzeit linear, das heißt für Turnier/Matchup-Analysen ist Neo4j besser geeignet als MySQL. Allerdings gilt dies nicht für Testfall 5, denn \autoref{fig:plot.scaling.testcase5} zeigt, dass hier Neo4j langsamer ist als MySQL. Sowohl MySQL als auch Neo4j haben ein lineares Wachstum, auch wenn es bei Neo4j nach einem beschränkten Wachstum aussieht. Ein beschränktes Wachstum erscheint aber für die Laufzeit nicht sinnvoll. Des Weiteren hat Neo4j ein stärkeres Wachstum als MySQL. Die Tatsache, dass beide Datenbanken bei den Abfragen deutlich langsamer sind, ist in diesem Testfall vernachlässigbar. Es ist ausreichend die besten Decks nur einmal am Tag oder wenn ein neues Turnier hinzugefügt wurde zu berechnen und das Ergebnis zu speichern: wenn kein neues Turnier hinzugefügt wird, ändert sich auch nicht die Top 10 Liste. Aus diesem Grund muss die Abfrage nicht in Echtzeit geschehen sondern kann durchaus einige Sekunden in Anspruch nehmen.
 
 \begin{figure}[t]
     \myfloatalign
@@ -145,7 +150,7 @@ In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-
     \label{fig:plot.scaling.testcase1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[b]
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
@@ -197,7 +202,7 @@ In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-
     \label{fig:plot.scaling.testcase3}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[b]
     \myfloatalign
     \begin{tikzpicture} 
     \begin{axis}[
@@ -221,6 +226,32 @@ In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der MySQL-
     \end{tikzpicture}
     \caption{Skalierung Testfall 4}
     \label{fig:plot.scaling.testcase4}
+\end{figure}
+
+\begin{figure}[t]
+    \myfloatalign
+    \begin{tikzpicture} 
+        \begin{axis}[
+            width=0.70*\linewidth, % Scale the plot to \linewidth
+            grid=major, % Display a grid
+            grid style={dashed,gray!30}, % Set the style
+            xlabel=\# Turniere, % Set the labels
+            ylabel=Laufzeit,
+            use units,
+            y unit=ms,
+            legend pos=north west,
+        ]
+        \addplot+[color=blue, mark=*,error bars/.cd,y dir=both,y explicit]
+        table[x=Size,y=Neo4j,y error=Neo4j error,col sep=comma]{evaluation-results/testcases-runtime.n-1000.testcase5.csv};
+        
+        \addplot+[color=red, mark=square,error bars/.cd,y dir=both,y explicit]
+        table[x=Size,y=MySQL,y error=MySQL error,col sep=comma]{evaluation-results/testcases-runtime.n-1000.testcase5.csv};
+        
+        \legend{Neo4j, MySQL}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Skalierung Testfall 5}
+    \label{fig:plot.scaling.testcase5}
 \end{figure}
 
 
