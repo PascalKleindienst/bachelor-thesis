@@ -1,0 +1,6 @@
+Test,Test Key,Size,Neo4j,Neo4j error,MySQL,MySQL error,Memory (MB)
+Test 5,top-ten-decks,1000,517.797,25.2219,250.313,16.3576,121.324
+Test 5,top-ten-decks,2000,1088.9,36.7155,438.771,25.262,121.634
+Test 5,top-ten-decks,3500,2153.51,148.811,778.477,68.3949,121.131
+Test 5,top-ten-decks,6000,3248.73,66.7194,1193.8,43.3638,120.443
+Test 5,top-ten-decks,11000,4980.3,51.5752,2169.68,52.6914,122.105

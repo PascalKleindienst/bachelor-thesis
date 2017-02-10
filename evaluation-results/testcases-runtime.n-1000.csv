@@ -3,3 +3,4 @@ Test 1,simple-keyword-ability-search,89.0865,10.29330,63.8553,6.7512,147.676
 Test 2,simple-artist-card-search,33.4044,4.77503,40.1673,4.3124,124.162
 Test 3,complex-card-search,125.5850,9.48998,60.2748,6.8150,135.055
 Test 4,matchup,14.8638,2.49095,16.8374,1.3103,124.682
+Test 5,top-ten-decks,517.797,25.2219,250.313,16.3576,121.324
