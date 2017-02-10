@@ -10,13 +10,7 @@
 
 \begin{otherlanguage}{american}
 \chapter*{Abstract}
-Short summary of the contents in English\dots 
-
-A great guide by Kent Beck how to write good abstracts can be found at:  
-\begin{center}
-\url{https://plg.uwaterloo.ca/~migod/research/beckOOPSLA.html}
-\end{center}
-It is particularly important to only use the language that has been specified in its surrounding \texttt{otherlanguage} block to cater to proper hyphenation.
+It is often difficult to quickly analyze cards, decks or tournaments in relational databases such as MySQL. The database queries get complex rather quickly and contain many JOIN commands, which adversely affects scalability. The many JOIN commands result from the fact that cards and decks have many attributes and therefore many relationships. Particularly larger tournaments contain many games, which increases the size of the data set fast and thereby having a negative effect on the runtime due to the bad scaling. Therefore the solution is the use of graph databases as these can represent such data superb and work with many relationships. Through the use of a graph database, tournaments can be analyzed well, but it is not quite as good for text searches. It has also been shown that searching in arrays in Neo4j is slower than joining and looking for data with the JOIN command.
 
 \end{otherlanguage}
 
@@ -25,9 +19,16 @@ It is particularly important to only use the language that has been specified in
 \begin{otherlanguage}{ngerman}
 \pdfbookmark[1]{Zusammenfassung}{Zusammenfassung}
 \chapter*{Zusammenfassung}
-Hier eine kurze Zusammenfassung des Inhaltes in deutscher Sprache\dots 
-Sollten Sie die Thesis auf Englisch schreiben, ist dennoch eine deutsche Zusammenfassung notwendig.
-Im umgekehrten Fall kann die englische Zusammenfassung durch Auskommentieren weggelassen werden.
+% Characteristics
+%   – 100 to 200 words (paper)
+%   – Maximum of one page (thesis)
+%   – Should answers four questions:
+%       What is the problem? 
+%       Why is it an interesting problem?
+%       What is your solution approach?
+%       What follows from your solution?
+
+Es ist oftmals schwer Karten, Decks oder Turniere in relationalen Datenbanken wie MySQL schnell zu analysieren oder zu durchsuchen. Die Datenbankabfragen werden schnell kompliziert und enthalten viele JOIN-Befehle, was sich negativ auf die Skalierbarkeit auswirkt. Die vielen JOIN-Befehle resultieren daraus, dass Karten und Decks viele Attribute und damit Verknüpfungen haben. Besonders größere Turniere enthalten viele Spiele wodurch der Datensatz schnell steigt, was sich aufgrund der schlechten Skalierung negativ auf die Laufzeit auswirkt. Als Lösung bietet sich daher die Verwendung von Graph-Datenbanken an, da diese Daten mit vielen Verknüpfungen gut darstellen und darauf arbeiten können. Durch den Einsatz einer Graph-Datenbank lassen sich Turniere gut analysieren, aber für Textsuchen eignen sie sich nicht ganz so gut. Außerdem hat sich gezeigt, dass das Suchen in Arrays in Neo4j langsamer ist als die Daten per JOIN einzubinden und darauf zu suchen. 
 \end{otherlanguage}
 
 \endgroup			
