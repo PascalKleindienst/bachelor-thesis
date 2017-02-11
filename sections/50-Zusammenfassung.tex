@@ -1,0 +1,51 @@
+% !TEX root = ../TUCthesis.tex
+%****************************************************
+\chapter{Zusammenfassung und Ausblick}\label{ch:conclusion}
+%****************************************************
+% Zusammenfassung + Ausblick => Test anderes Datenmodell ohne Arrays (Ability, Colors, Types)
+% Fragen von Abstract beantworten (Abstract schreiben!)
+
+\section{Zusammenfassung}
+% Conclusions
+%   – Summarize all contributions and highlight outstanding results
+%   – Usually written in past tense
+% 
+% Keep the conclusions brief and precise
+%   – Beware of accidental statements that have not been proven in the thesis
+
+% Matchups -> wie erwartet neo4j super, mysql schlecht
+Die anfängliche Vermutung, dass eine Graphdatenbank besser für die Matchup Analyse eines Decks geeignet ist, hat sich, wie im Testfall 4 zu sehen, bestätigt. Bei der ursprünglichen Datenmenge von 1000 Turnieren unterschied sich die Laufzeit bei beiden Systemen nur minimal. Bei der Skalierung aber wies die Laufzeit der Neo4j Abfragen nur ein leichtes lineares Wachstum auf, wohingegen die Laufzeit bei MySQL ein exponentielles Wachstum hatte.
+
+% Top-10 Decks -> da matchup analyse bei neo4j besser erwartet das hier neo4j ebenfalls besser, aber nicht der fall (unerwartet) -> möglicher Grund: unoptimierte query, bessere abfrage möglich (testen)
+Bei der Berechnung der Top 10 Decks war eigentlich davon auszugehen, dass hier die Graphdatenbank wieder besser abschneiden würde. Der Grund für die Vermutung war, dass hier wieder Matchups berechnet werden müssen und dies bei dem vorherigen Testfall für die Matchup Analyse der Fall war. Allerdings ergab sich in diesem Testfall, dass Neo4j eine längere Laufzeit hatte als MySQL. Beide Datenbanksysteme hatten in diesem Fall ein lineares Wachstum, aber bei Neo4j war die Steigung größer als bei MySQL. Ein Grund für das unerwartete Ergebnis könnte sein, dass die genutzte cypher Abfrage nicht die beste war und es noch einen besseren Weg gibt.
+
+% Textsuche -> neo4j skaliert schlecht (erwartet), anfangs minimal schneller (unerwartet)
+Wie zu erwarten war, skalierte die Textsuche mittels \verb|LIKE| bei MySQL besser als das äquivalent \verb|CONTAINS| bei Neo4j. Während die Laufzeit bei MySQL kaum bis gar nicht stieg, stieg sie pro gemessenem Punkt in Neo4j um den Faktor 1.5 bis 2.0 - hatte also ein starkes lineares Wachstum. Was allerdings unerwartet war, war das Neo4j beim ursprünglichen Datensatz sogar leicht schneller war als die MySQL Textsuche.
+
+% Verknüpfungen -> neo4j langsamer (unerwartet) -> vermutlich array schuld, skaliert schlecht (testen anderes Schemata)
+Bei Testfall 3, wo es um Abfragen mit vielen Verknüpfungen ging, kam es zu zwei unerwarteten Ergebnissen. Eigentlich war davon auszugehen, dass Neo4j hier sehr gut skaliert wohingegen MySQL, aufgrund der vielen \verb|JOINS|, bei der Skalierung einen großen Wachstumsfaktor in der Laufzeit aufweisen würde. Nichtsdestotrotz trat genau der entgegengesetzte Fall ein: Die Laufzeit bei MySQL blieb relativ konstant ungeachtet der Anzahl an Karten und Neo4j skalierte schlecht und war in jedem Messpunkt langsamer als MySQL. Ein möglicher Grund könnte sein, dass in dem gewählten Graph-Schema die Karten-Typen, Fähigkeiten und Farben als Array gespeichert wurden. Dadurch wurden zwar zwei Abfragen weniger gebraucht als bei MySQL, aber anscheinend war dies der Grund für die schlechte Skalierung von Neo4j.
+
+% Keyword -> siehe Verknpüfungen, skaliert aber genauso wie mysql (grund: keywords anzahl in skalierung konstant, erwartet)
+In dem Test mit den Schlüsselwort-Fähigkeiten skalierten beide Datenbanksysteme ungefähr gleich gut. Dies lag vermutlich daran, dass die Anzahl der Fähigkeiten sich bei der Skalierung nicht änderte. Des Weiteren war aber auch hier Neo4j langsamer als MySQL was vermutlich wie bei dem vorherigen Testfall mit den Verknüpfungen. Der Grund dafür liegt vermutlich an der Tatsache, dass für Fähigkeiten Arrays benutzt wurden, denn dies ist den beiden Testfällen gemein.
+
+% insgesamt neo4j weniger abfragen, da arrays?, abfragen lesbarer/kürzer
+Es hat sich also gezeigt, dass Neo4j entgegen der anfänglichen Annahmen nicht in allen Punkten besser war als eine relationale Datenbank wie MySQL, um Sammelkarten effizient zu speichern und analysieren. Die einzige Ausnahme war im Testfall der Matchup Analyse, hier lag Neo4j deutlich vor MySQL was die Skalierbarkeit anbelangt. Für Kartenspiele, deren Turniere nach dem Schweizer System ablaufen, eignet sich also Neo4j eher als MySQL. Insgesamt waren aber die Abfragen mit cypher sowohl kürzer als auch lesbarer als die entsprechenden Abfragen in SQL, was ein Vorteil von Neo4j ist. Entgegengesetzt der anfänglichen Annahme unterschied sich auch der Speicherverbrauch der beiden Systeme nur um maximal 0.1\% und war somit irrelevant.
+
+\section{Ausblick}
+% Outlook
+%   – How can your work be extended to address even more scenarios?
+%   – Show that you have clearly understood what you have not done
+%       Valid reasons: Time constraints, too many parameters, …
+%       Invalid reasons: “There was not enough space”
+
+% Testen anderer Schemata ohne Array um zu testen ob besser und an welchen genau es lag (nicht gemacht, da nicht genug Zeit vorhanden)
+Wie zuvor schon erwähnt tauchten bei Neo4j unerwartete Ergebnisse in Zusammenhang mit der Benutzung von Arrays auf. Weiterführend bietet sich also an andere Daten-Schemata zu verwenden, welche keine Arrays nutzen, und zu überprüfen, ob Arrays der Grund für die schlechte Performance sind. Es bietet sich weiterhin an dabei zu untersuchen, wie groß der Einfluss bei den einzelnen Attributen ist. Aufgrund der Tatsache, dass hier 3 weitere Schemata \emph{(für colors, abilities und types)} getestet werden müssten, konnte dies aus zeitlichen Gründen nicht untersucht werden.
+
+% Testfall 5: Query-optimieren/rausfinden warum langsamer als mysql, anderes Schema testen und schauen ob besser geeignet (matchup testfall 4 immernoch gut?)
+Es wäre interessant zu untersuchen, warum die cypher Abfrage in Top 10 Decks Testfall langsamer ist als die MySQL Abfrage und auch schlechter skaliert. Ein möglicher Grund könnte sein, dass die Abfrage nicht optimal ist, was sehr wahrscheinlich ist, und es einen besseren Weg gibt die Abfrage zu schreiben. Ein weiterer Grund könnte sein, dass das gewählte Graph-Schema für diese Art von Abfragen nicht geeignet ist und ein anderes besser geeignet wäre. Sofern man das Schema ändert, muss außerdem der Testfall 4 \emph{(Matchup-Analyse)} erneut getestet werden, da es sein könnte, da sich hier die Laufzeiten ebenfalls positiv oder negativ ändern können. Die Abfrageoptimierung ist jedoch ein kompliziertes Thema und erfordert oft einiges an Erfahrung mit der Sprache. Aus zeitlichen Gründen und fehlender Erfahrung war es daher nicht möglich, die Abfrage zu optimieren oder ein anderes Schema zu testen.
+
+% Weitere Testfälle: Top Spieler (ähnlich zu deck), 
+Ein weiterer möglicher Testfall wäre jener, der sich auf die Deck-Analyse beziehen, zum Beispiel die Verteilung der verschiedenen Karten-Typen oder Farben in einem Deck angeben. Des Weiteren könnte untersucht werden wie gut die beiden Datenbanken sind, wenn nach den meist verwendeten Karten, gruppiert nach Farben, welche in Decks verwendet werden, gesucht wird. Bei diesem Testfall würden sowohl der Turnier als auch der Karten Teil aus der Datenbank zusammen abgefragt werden, was bei den anderen Testfällen nicht der Fall war. Jedoch war nicht genügend Zeit, um diese und andere Testfälle zu untersuchen.
+
+% Ausweiten/Testen auf andere Kartenspiele mit weniger Karten/Verknpüfungen ala Pokemon, Yu-Gi-Oh oder Hearthstone
+In dieser Arbeit wurde lediglich das \ac{TCG} Magic: the Gathering getestet. \ac{MtG} ist aber nicht das einzige sondern nur mit das älteste und daher umfangreichste \ac{TCG}. Bei anderen Kartenspielen können die Karten durchaus weniger komplex sein und damit weniger Verknüpfungen haben. Folglich würde sich in einer späteren Arbeit anbietet zu untersuchen, ob die Ergebnisse auch mit anderen Kartenspielen wie Pokemon, Yu-Gi-Oh! oder Hearthstone reproduzierbar sind. 
