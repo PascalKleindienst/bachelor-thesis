@@ -1,52 +1,130 @@
+% Regelbuch: Erklärt Grundregeln zu MtG
 @booklet{rulebook:2013,
     author = {Matt Tabak, Del Laugel and Kelly Digges},
-    title = {Magic: the Gathering Basic Rulebook 2013},
+    title = {{Magic: the Gathering Basic Rulebook 2013}},
     date = {July 2013},
     pages = {4--7},
 }
 
+% Erklärungen zu Deck-Typen: Aggro, Midrange, Control
 @online{wotc:gameplay,
     author = {Wizards of the Coast},
-    title = {SPIELINFOS/GAMEPLAY
-    STELLE DEIN EIGENES MAGIC-DECK ZUSAMMEN},
+    title = {{Spielinfos/Gameplay Stelle Dein Eigenes Magic-Deck Zusammen}},
     date = {2016},
-    url = {http://magic.wizards.com/de/game-info/gameplay/how-to-build-a-deck},
+    url = {http://magic.wizards.com/de/gameplay/how-to-build-a-deck},
 }
 
+% Regeln zu Schweizer System bei MtG, Tabelle mit Anzahl Spieler <-> Gespielte Runden
 @online{wotc:swiss,
     author = {Wizards of the Coast},
-    title = {WHAT ARE SWISS PAIRINGS?},
+    title = {What are Swiss Pairings?},
     date = {2016},
     url = {http://magic.wizards.com/en/game-info/products/magic-online/swiss-pairings},
 }
 
+% Regeln zu Schweizer System bei MtG
 @online{starcitygames:swiss,
     author = {StarCityGames.com},
-    title = {What is a Swiss-style tournament?},
+    title = {{What is a Swiss-style Tournament?}},
     date = {2016},
     url = {http://sales.starcitygames.com/FAQ.php?ID=92}
 }
 
+% Trend Graph-DB
+@online{forbes:trend.graphdb,
+    author = {Tony Agresta},
+    title = {{The Hype Around Graph Databases And Why It Matters}},
+    date = {2016},
+    url = {http://www.forbes.com/sites/ciocentral/2015/04/06/the-hype-around-graph-databases-and-why-it-matters}
+}
+
+% Grundlagen Graph-DB, Einsatzmöglichkeiten, Stärken
 @book{robinsongraph:2015,
-    title={Graph Databases: New Opportunities for Connected Data},
+    title={{Graph Databases: New Opportunities for Connected Data}},
     author={Robinson, I. and Webber, J. and Eifrem, E.},
     isbn={9781491930861},
     year={2015},
     publisher={O'Reilly Media}
 }
 
+% Deck-Typen, Deck-Analyse basierent auf Karte + Synergien zwischen Karten, Problem nur Endergebnisse
+@techreport{haumagic,
+    title={{Magic: The Gathering Deck Performance Prediction}},
+    author={Hau, Roger and Plotkin, Evan and Tran, Hung},
+    institution={Stanford University}
+}
+
+% Vergleich RDBMS<->Graph: highly connected data -> best solution graph db, else rdbms
+@inproceedings{miller2013graph,
+    title={{Graph Database Applications and Concepts with Neo4j}},
+    author={Miller, Justin J},
+    booktitle={Proceedings of the Southern Association for Information Systems Conference, Atlanta, GA, USA},
+    volume={2324},
+    year={2013}
+}
+
+% Vergleich MySQL<->Neo4j: Beide akzeptabel | neo4j besser bei Strukurabfragen/Strukturellenabfragen
+@inproceedings{vicknair2010comparison,
+    title={{A Comparison of a Graph Database and a Relational Database: A Data Provenance Perspective}},
+    author={Vicknair, Chad and Macias, Michael and Zhao, Zhendong and Nan, Xiaofei and Chen, Yixin and Wilkins, Dawn},
+    booktitle={Proceedings of the 48th annual Southeast regional conference},
+    pages={42},
+    year={2010},
+    organization={ACM}
+}
+
+% Vergleich RDBMS<->Neo4j: Beide Gut | 1 join: fast gleich => mehrere Joins/nestes queries: cypher besser
+@article{jaiswal2013comparative,
+    title={{Comparative Analysis of Relational and Graph Databases}},
+    author={Jaiswal, Garima and Agrawal, Arun Prakash},
+    journal={IOSR Journal of Engineering (IOSRJEN)},
+    year={2013}
+}
+
+% Benutzt MtGJSON | Analysiert Effekt-Text um Stärke einer Karte zu bestimmen
+@techreport{finkpredicting,
+    title={{Predicting the Strength of Magic: The Gathering Cards From Card Mechanics}},
+    author={Fink, Dustin and Pastel, Benjamin and Sapra, Neil},
+    year={2015},
+    type={CS 229 Machine Learning Final Projects},
+    institution={Stanford University}
+}
+
+% Benutzt MtGJSON | Preisvorhersage von Karten basierend auf Turnieren
+@techreport{perkhounkovfinancial,
+    title={{Financial Magic}},
+    author={Perkhounkov, Boris A and Frye, Cooper Gates and Franklin, Emily Margaret},
+    year={2015},
+    type = {CS 229 Machine Learning Final Projects},
+    institution={Stanford University}
+}
+
+% Benutzt MtGJSON, MTGPTOP8 | Preisvorhersag
+@techreport{pawlicki2014prediction,
+    title={{Prediction of Price Increase for Magic: The Gathering Cards}},
+    author={Pawlicki, Matthew and Polin, Joseph and Zhang, Jesse},
+    year={2014},
+    type={CS 229 Machine Learning Final Projects},
+    institution={Stanford University}
+}
+
 @online{neo4jblog:graph,
     author = {Joy Chao},
-    title = "{Graph Databases for Beginners: Graph Theory \& Predictive Modeling}",
+    title = {{Graph Databases for Beginners: Graph Theory \& Predictive Modeling}},
     date = {2016},
     url = {https://neo4j.com/blog/graph-theory-predictive-modeling},
 }
 
-@techreport{haumagic,
-    title={Magic: The Gathering Deck Performance Prediction},
-    author={Hau, Roger and Plotkin, Evan and Tran, Hung},
-    institution={Stanford University}
+@inproceedings{johnson2013online,
+    title={An Online Database System for Card Stores},
+    author={Johnson, G and Wang, Z and Zhang, X},
+    booktitle={Proceedings of the International Conference on e-Learning, e-Business, Enterprise Information Systems, and e-Government (EEE)},
+    pages={120},
+    year={2013},
+    organization={The Steering Committee of The World Congress in Computer Science, Computer Engineering and Applied Computing (WorldComp)}
 }
+
+
 
 @online{mtgjson,
     author = {Schults, Robert and Moura, Sergio},
@@ -61,29 +139,7 @@
     url = {http://mtgtop8.com}
 }
 
-@inproceedings{vicknair2010comparison,
-    title={A comparison of a graph database and a relational database: a data provenance perspective},
-    author={Vicknair, Chad and Macias, Michael and Zhao, Zhendong and Nan, Xiaofei and Chen, Yixin and Wilkins, Dawn},
-    booktitle={Proceedings of the 48th annual Southeast regional conference},
-    pages={42},
-    year={2010},
-    organization={ACM}
-}
 
-@inproceedings{johnson2013online,
-    title={An Online Database System for Card Stores},
-    author={Johnson, G and Wang, Z and Zhang, X},
-    booktitle={Proceedings of the International Conference on e-Learning, e-Business, Enterprise Information Systems, and e-Government (EEE)},
-    pages={120},
-    year={2013},
-    organization={The Steering Committee of The World Congress in Computer Science, Computer Engineering and Applied Computing (WorldComp)}
-}
-@article{jaiswal2013comparative,
-    title={Comparative analysis of Relational and Graph databases},
-    author={Jaiswal, Garima and Agrawal, Arun Prakash},
-    journal={IOSR Journal of Engineering (IOSRJEN)},
-    year={2013}
-}
 
 @book{lal2015neo4j,
     title={Neo4j Graph Data Modeling},
@@ -133,11 +189,9 @@
     year={2015},
     publisher={Packt Publishing}
 }
-@article{finkpredicting,
-    title={Predicting the strength of Magic: The Gathering cards from card mechanics},
-    author={Fink, Dustin and Pastel, Benjamin and Sapra, Neil}
-}
-@inproceedings{chen2009keyword,
+
+
+inproceedings{chen2009keyword,
     title={Keyword search on structured and semi-structured data},
     author={Chen, Yi and Wang, Wei and Liu, Ziyang and Lin, Xuemin},
     booktitle={Proceedings of the 2009 ACM SIGMOD International Conference on Management of data},
@@ -145,13 +199,7 @@
     year={2009},
     organization={ACM}
 }
-@inproceedings{miller2013graph,
-    title={Graph database applications and concepts with Neo4j},
-    author={Miller, Justin J},
-    booktitle={Proceedings of the Southern Association for Information Systems Conference, Atlanta, GA, USA},
-    volume={2324},
-    year={2013}
-}
+
 
 @book{bartholomew2013getting,
     title={Getting Started with MariaDB},
@@ -162,7 +210,3 @@
     publisher={Packt Publishing}
 }
 
-@article{perkhounkovfinancial,
-    title={Financial Magic},
-    author={Perkhounkov, Boris A and Frye, Cooper Gates and Franklin, Emily Margaret}
-}

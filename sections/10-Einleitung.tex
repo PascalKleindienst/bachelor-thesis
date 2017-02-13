@@ -2,22 +2,64 @@
 %****************************************************
 \chapter{Einleitung}\label{ch:intro}
 %****************************************************
+% Purpose
+%   – Motivation and application scenario
+%        What’s the context?
+%   – Problem description
+%       What is the problem?
+%       Why is it a problem?
+%   – Hinting at your own contributions
+%       What techniques will you apply to solve the problem?
+%       How will your solution differ from existing work?
+%       -> Your approach (not the results!) should be clear after reading the introduction
+% The introduction commonly also summarizes the work’s structure
+% It is usually written in present or future tense
+%
+% Difference between abstract and introduction:
+%    More space for introduction
+%    Details about the scenario may not fit into the abstract
+%    Do not mention results in the introduction
+%
+% Problematik X wird auch in [..] behandelt, allerdings mit einem Schwerpunkt auf ..., der hier nicht im Vordergrund steht.
+% Der Ansatz in X scheint geeignet, so dass Algorithmus Y naher zu betrachten ist.
+% Das Softwarepaket X stellt nach [..] einen Standard im Bereich ... dar, so dass  dieses auch hier zum Einsatz kommen soll.
 
-Sammelkartenspiele auch \ac{TCG} genannt sind Spiele bei denen es meist mehrere hunderte Karten verschiedener Seltenheitsstufen gibt. Man kann sich aus den Karten eine Auswahl zusammenstellen und mit anderen Spielern gegeneinander spielen. Einige der bekanntesten Vertreter von Sammelkartenspielen sind etwa \emph{Magic: the Gathering}, \emph{Pokemon}, \emph{Yu-Gi-Oh!} und \emph{Hearthstone: Heroes of Warcraft}. 
+% ====================
+% Was ist der Kontext?
+% ====================
+Sammelkartenspiele, auch \ac{TCG} genannt, sind Spiele bei denen es meist mehrere hunderte Karten verschiedener Seltenheitsstufen gibt. Man kann sich aus den Karten eine Auswahl zusammenstellen und mit anderen Spielern gegeneinander spielen. Einige der bekanntesten Vertreter von Sammelkartenspielen sind etwa \emph{Magic: the Gathering}, \emph{Pokemon}, \emph{Yu-Gi-Oh!} und \emph{Hearthstone: Heroes of Warcraft}. Die Anzahl an Karten eines \ac{TCG} wie Magic: the Gathering steigt von Jahr zu Jahr an. Bei Magic: the Gathering erscheinen pro Jahr zwei bis vier neue Sets mit durchschnittlich zwischen 200 bis 400 Karten. Die Menge der Karten nimmt also jedes Jahr beständig zu \emph{(aktuell gibt es >15.000 verschiedene Karten und insgesamt >25.000 Karten verschiedener Versionen)}\footnote{Basierend auf http://mtgjson.com}. Aufgrund der großen Menge an Karten sind daher Applikation sinnvoll mit denen man anhand bestimmter Kriterien nach Karten suchen kann. Besonders für professionelle Turnierspieler ist eine gute Suchfunktion wichtig, um die passenden Karten für ihr Deck zu finden. Andererseits ist auch die Funktion das Deck-Analysieren zu lassen wichtig, um es optimieren zu können und somit konkurrenzfähig zu bleiben.
 
-%% -> MTGJSON
-Die Anzahl an Karten eines \ac{TCG} wie Magic: the Gathering steigt von Jahr zu Jahr an. Bei Magic: the Gathering erscheinen pro Jahr zwei bis vier neue Sets mit durchschnittlich zwischen 200 bis 400 Karten. Die Menge der Karten nimmt also jedes Jahr beständig zu \emph{(aktuell gibt es >15.000 verschiedene Karten und insgesamt >25.000 Karten verschiedener Versionen)}\footnote{Basierend auf http://mtgjson.com}. Mit \url{http://mtgjson.com} gibt es einen open-source Datensatz aller Kartendaten, welcher unter anderem auch in \cite{finkpredicting, perkhounkovfinancial} benutzt wird, so dass dieser auch hier zum Einsatz kommen soll. 
+% =================================================
+% Was ist das Problem und warum ist es ein Problem?
+% =================================================
+%TODO: Grammatik, Struktur ausbessern
+Das Problem hierbei ist, dass Datenbankabfragen in relationalen Datenbanken, wie MySQL, aufgrund der vielen Verknüpfungen der Attribute einer Karte, sehr schnell an Komplexität zunehmen. Daraus folgt, dass die Abfragen viele \verb|JOIN|-Befehle enthalten, was sich wiederrum negativ auf die Lauzeit und besonders die Skalierbarkeit auswirkt. Bei den meisten Applikation, die Suchfunktionen oder Deck- und Turnieranalysen anbieten, handelt es sich um Webapplikation, wodurch eine eine kurze Laufzeit sehr wichtig ist.
+Turniere werden nach dem Schweizer-System, einer Sonderform des Rundenturniers, gespielt, wodurch sich ein Netzwerk aus Paarungen der verschiedenen Runden ergibt. Aus diesem Grund steigt die Anzahl der gespielten Partien schnell an. Bei einem Turnier mit 50 Spielern werden 6 Runden gespielt, wovon jede Runde pro Paarung zwei bis drei Spiele gespielt werden. Bei 6 Runden und 50 Spielern ergeben sich somit zwischen 300 und 450 gespielte Partien. Daher speichern Anbieter wie \url{http://mtgtop8.com} oder \url{https://mtgdecks.net} Ergebnisse von Turnieren oftmals der Einfachheit halber nur als Rangfolge und nicht jedes Rundendergebnis. Mit letzterem Ansatz ließen sich verschiedene Analysen über die Decks und Spieler ausführen, wie zum Beispiel die Berechnung von Matchups, das heißt welche Gewinn- oder Verlustchancen ein Deck gegen ein anderes Deck hat. Diese Problematik wird auch in \cite{haumagic} behandelt, allerdings mit einem Schwerpunkt auf der Häufigkeit der benutzen Karten und der Synergie zwischen diesen. Unter Einbeziehung von Rundenergebnissen, welche aber nicht zur Verfügung standen, könnte die Stärke eines Decks noch besser eingeschätzt werden \cite{haumagic}.
 
-%% Online-Shops -> \cite{finkpredicting} und \cite{johnson2013online}
-Online-Shops benötigen oft nur einen Bruchteil der Informationen, die sich auf einer Karte befinden und speichern diese tabellarisch, d.h. in einer relationalen Datenbank \cite{johnson2013online}. Gerade für kleinere Online-Shops eignet sich dieser Ansatz, da hierbei der Wartungsaufwand gering gehalten wird \cite{johnson2013online}. Karten-Suchmaschinen erfordern aber hoch strukturierte Daten, da alle Informationen einer Karte effizient gespeichert, verwaltet und Suchanfragen in Echtzeit beantwortet werden müssen. 
+% ===========================================================================================
+% Welche Techniken werden in dieser Arbeit angewendet um das Problem zu lösen (und warum)?
+% ===========================================================================================
+% Graph-DB/Neo4j
+Graph-Datenbanken haben in den letzten paar Jahren viel an Bedeutung gewonnen, da sie einen einfachen Vorteil gegenüber herkömmlichen relationalen Datenbank haben \cite{forbes:trend.graphdb}. Bei Graph-Datenbanken dreht sich alles um die Verbindungen zwischen Datenpunkten und auch bei wachsenden Datensätzen bleibt die Performance relativ konstant \cite{robinsongraph:2015}. 
+% Vergleich rel <-> Graphs
+In \cite{vicknair2010comparison, miller2013graph, jaiswal2013comparative} wird Neo4j mit Graph-Datenbanken verglichen. Sowohl \cite{vicknair2010comparison} als auch \cite{jaiswal2013comparative} kamen zu dem Ergebnis, dass beide Systeme eine gute Performanz hatten und bei nur einer Beziehung die Laufzeit fast gleich war. Außerdem hat sich gezeigt, dass falls in der Abfrage mehrere Beziehungen beteiligt oder verschachtelte Abfragen enthalten sind, die Graph-Datenbank eine geringere Laufzeit hatte \cite{jaiswal2013comparative}. Der Ansatz einer Graph-Datenbank scheint daher geeignet für Kartenspiele und Turniere, welche viele Verknüpfungen aufweisen oder ein großes Wachstum an Daten haben, so dass diese näher zu betrachten ist.
 
-%% Decks, Turniere -> \cite{haumagic}
-Ein weiteres Einsatzgebiet ist das verwalten und analysieren von Decks und Turnieren. Turniere werden nach dem Schweizer-System, einer Sonderform des Rundenturniers, gespielt, wodurch sich ein Netzwerk aus Paarungen der verschiedenen Runden ergibt. Aus diesem Grund werden Ergebnisse von Turnieren oftmals der Einfachheit halber nur als Rangfolge gespeichert und nicht jedes Rundendergebnis. Mit letzterem Ansatz ließen sich verschiedene Analysen über die Decks und Spieler, wie  zum Beispiel Matchups, das heißt welche Gewinn- oder Verlustchancen ein Deck gegen ein anderes Deck hat, erstellen. 
+% MtGJSON für Karten/Sets
+Um die relationale Datenbank mit der Graph-Datenbank vergleichen zu können, werden als Basis die Informationen zu allen erschienen Karten und Editionen benötigt. Das Softwarepaket \emph{mtgjson}\footnote{\url{http://mtgjson.com}} ist ein open-source Datensatz aller Kartendaten und Editionen. Dieser stellt eine Art Standard dar, welcher unter anderem auch in \cite{finkpredicting, perkhounkovfinancial, pawlicki2014prediction} benutzt wird, so dass er auch hier zum Einsatz kommen soll. 
 
-%% => graphdb im kommen evtl gut geeignet
-%% Vergleich rel <-> Graph: \cite{vicknair2010comparison}, \cite{miller2013graph}, \cite{jaiswal2013comparative}
-%%
-%% Problematik X wird auch in [..] behandelt, allerdings mit einem Schwerpunkt auf ..., der hier nicht im Vordergrund steht.
-%% Der Ansatz in X scheint geeignet, so dass Algorithmus Y naher zu betrachten ist.
-%% Das Softwarepaket X stellt nach [..] einen Standard im Bereich ... dar, so dass  dieses auch hier zum Einsatz kommen soll.
+% MtGTop8 für Decks
+Die Daten für Decks wurden von der Seite \url{http://mtgtop8.com}, welche Decks von Turnieren der ganzen Welt veröffentlicht, entnommen. MtGTop8 ist einer der größten Anbieter mit über 75.000 Decks und wurde auch von Pawlicki et. al. benutzt um Preisvorhersagen über Karten zu machen \cite{pawlicki2014prediction}. Jedoch bietet MtGTop8 weder eine herunterladbare Liste der Decks noch ein öffentliches \ac{API} an. 
+Leider kann MtGTop8 nicht benutzt werden um auch als Datenbasis für Turniere zu dienen, da hier wie bei praktisch allen großen Anbieter nur die Endergebnisse veröffentlicht werden und die einzelnen Rundenergebnisse nicht vorhanden sind. Aus diesem Grund müssen simulierte Turniere als Datenbasis verwendet werden.
+
+% ==============================================================
+% Wie unterscheidet dich der gewählte Ansatz von bisherigen?
+% ==============================================================
+% Online-Shops -> \cite{finkpredicting} und \cite{johnson2013online}
+Online-Shops benötigen oft nur einen Bruchteil der Informationen, die sich auf einer Karte befinden und speichern diese in einer relationalen Datenbank in ein bis drei Tabellen \cite{johnson2013online}. Gerade für kleinere Online-Shops eignet sich dieser Ansatz, da hierbei der Wartungsaufwand gering gehalten wird \cite{johnson2013online} und die Abfragen nicht viele \verb|JOIN| Befehle enthalten und damit performant sind. Karten-Suchmaschinen erfordern aber, dass alle Attribute einer Karte gespeichert werden, damit nach jedem Attribut gesucht \emph{(auch kombiniert)} gesucht werden kann. Daher ist es erforderlich, dass alle Informationen einer Karte effizient gespeichert und verwaltet werden und außerdem Suchanfragen in Echtzeit beantwortet werden können.
+
+% Turniere speichern mit einzelnen Matches <-> nur Top X Endergebnisse ala MTGTOP8
+Wie schon erwähnt speichern bisher die großen Anbieter von Turnier- und Deck-Daten lediglich die Endplatzierungen der Decks und Spieler. Dieser Ansatz macht es aber praktisch unmöglich Deck-Analysen zu erstellen, da es hierfür erforderlich ist die einzelnen Spiele-Paarungen und Rundenergebnisse zu betrachten. Daher werden in diesem Ansatz nicht die Endergebnisse der Turniere sondern jedes Ergebnis jeder gespielten Partie gespeichert, sodass es möglich ist Decks und ihre Stärken und Schwächen besser zu analysieren.
+
+
+
 
