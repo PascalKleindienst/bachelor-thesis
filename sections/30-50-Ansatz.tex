@@ -4,45 +4,56 @@
 %****************************************************
 
 \subsection{Datenbasis}
-Als Basis der Kartendaten wird mtgjson\footnote{http://mtgjson.com} benutzt, welche \ac{MtG} Kartendaten als \ac{JSON} bereitstellt. Die Decks hingegen werden von mtgtop8\footnote{http://mtgtop8.com} bezogen.
+Als Basis der Kartendaten wird mtgjson\footnote{\url{http://mtgjson.com}} benutzt, welche \ac{MtG} Karten und Editions-Daten als \ac{JSON}-Datei bereitstellt. Die Decks hingegen werden von mtgtop8\footnote{\url{http://mtgtop8.com}} bezogen.
 
 \subsection{Datenbanken}
-Als Graph-Datenbank wird \emph{Neo4j} eingesetzt, da diese eine hoch skalierbare Datenbank ist, welche auf allen gängigen Betriebssystemen läuft \cite{goel2015neo4j}. Des Weiteren besitzt Neo4j mit \emph{Cypher} eine ausdrucksstarke Abfragesprache. Ein Vorteil von Cypher ist, dass ab Neo4j 2.1 der Import aus \ac{CSV}-Dateien unterstützt wird. \cite{panzarino2014cypher}
+Als Graph-Datenbank wird \emph{Neo4j} Version 3.1 eingesetzt, da diese eine hoch skalierbare Datenbank ist, welche auf allen gängigen Betriebssystemen läuft \cite{goel2015neo4j}. Des Weiteren besitzt Neo4j mit \emph{Cypher} eine ausdrucksstarke Abfragesprache. Ein Vorteil von Cypher ist, dass ab Neo4j 2.1 der Import aus \ac{CSV}-Dateien unterstützt wird \cite{panzarino2014cypher}. 
 
-%TODO: MariaDB/MySQL
-Als \ac{RDBMS} wird MariaDB\footnote{https://mariadb.com} eingesetzt, welche vom Urheber von MySQL entwickelt wird. MariaDB ist ein Fork von MySQL und gilt als dessen evolutionäre Nachfolger. \cite{bartholomew2013getting}
+Als \ac{RDBMS} wird MariaDB\footnote{\url{https://mariadb.com}} Version 10.1 eingesetzt, welche vom Urheber von MySQL entwickelt wird. MariaDB ist ein Fork von MySQL und gilt als dessen evolutionäre Nachfolger \cite{bartholomew2013getting}.
 
 \subsubsection{Import der Daten}
-Da eine große Menge an Daten importiert werden müssen, zum Beispiel über 90.000 Übersetzungen, ist eine schnelle Import-Funktion hilfreich. In \autoref{listing:cypher.import.csv} befindet sich ein Kommando, um Übersetzungen nach Neo4j zu importieren und in \autoref{listing:sql.import.csv} ein Kommando, um nach MySQL zu importieren.
+Da eine große Menge an Daten importiert werden müssen, zum Beispiel über 100.000 Übersetzungen, ist eine schnelle Import-Funktion hilfreich. Die schnellste und einfachste Möglichkeit dafür, welche beide Systeme unterstützen, ist die Daten als \ac{CSV}-Dateien zu importieren. In \autoref{listing:cypher.import.csv} befindet sich ein Kommando, um Übersetzungen nach Neo4j zu importieren und in \autoref{listing:sql.import.csv} das Äquivalent für den Import in MySQL/MariaDB.
 
-\begin{listing}[H]
-    \caption{Importieren von Übersetzungen}
+\begin{listing}[t]
+    \caption{Importieren von Übersetzungen in Neo4j}
     \label{listing:cypher.import.csv}
     \begin{lstlisting}[language=SQL]
-    USING PERIODIC COMMIT 1000
-    LOAD CSV WITH HEADERS FROM "file:translations.csv" AS row
-    CREATE (:Translation { name: row.name });
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM "file:translations.csv" AS row
+CREATE (:Translation { name: row.name });
+    
+USING PERIODIC COMMIT
+LOAD CSV WITH HEADERS FROM "file:%s/translations.csv" AS row
+MATCH (c:Card { name: row.card })
+MATCH (t:Translation { name: row.name })
+CREATE (c)-[:HAS_TRANSLATION { lang: row.language }]->(t);
     \end{lstlisting}
 \end{listing}
 
-\begin{listing}[H]
-    \caption{Importieren von Übersetzungen}
+\begin{listing}[t]
+    \caption{Importieren von Übersetzungen in MySQL/MariaDB}
     \label{listing:sql.import.csv}
     \begin{lstlisting}[language=SQL]
-    LOAD DATA LOCAL INFILE 'translations.csv' INTO TABLE `translations`
-    CHARACTER SET UTF8
-    FIELDS TERMINATED BY ','
-    ENCLOSED BY '"'
-    LINES TERMINATED BY '\r\n'
-    IGNORE 1 LINES
-    SET (@card, name, lang, card_id);
+LOAD DATA LOCAL INFILE 'translations.csv' INTO TABLE `translations`
+CHARACTER SET UTF8
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+SET (@card, name, lang, card_id);
     \end{lstlisting}
 \end{listing}
 
 \subsection{Programmiersprache}
-Als Programmiersprache wird \emph{PyPy}\footnote{http://pypy.org}, eine alternative \emph{Python} Implementierung, verwendet. Die Vorteile von PyPy sind der integrierte \ac{JIT} Compiler, wodurch sich eine schnellere Ausführungszeit ergibt, und der geringere Speicherverbrauch. \cite{doglio2015mastering} 
+Als Programmiersprache wird \emph{PyPy}\footnote{\url{http://pypy.org}}, eine alternative \emph{Python} Implementierung, die eine hohe Kompatibilität zu Python hat, verwendet. Die Vorteile von PyPy sind der integrierte \ac{JIT} Compiler, wodurch sich eine schnellere Ausführungszeit ergibt, und der geringere Speicherverbrauch \cite{doglio2015mastering}. Als Version wird \emph{PyPy2.7 v5.6.0} verwendet, welches der Python Version 2.7 entspricht.
+
+\subsection{Betriebssystem}
+Die Tests wurden auf einem Ubuntu 14.04 Server mit 5120 MB Arbeitsspeicher und 2 CPU Kernen getestet. Die zur Verfügung stehenden CPU Kerne stammen von einem AMD FX-4100 Prozessor, welcher mit 3.5GHz getaktet ist.
+
+\subsection{Schweizer System}
+Aufgrund der Tatsache, dass keine Turnier Daten zur Verfügung stehen, müssen die Turniere nach dem Schweizer System simuliert werden, um einen geeigneten Datensatz zu erstellen. Als Grundlage hierfür wird das Projekt \emph{Swiss Tournament Pairing System - Relational Databases}\footnote{\url{https://benjaminbrandt.com/relational-databases-final-project/}} von Ben Brandt verwendet. Hierbei handelt es sich um ein Schweizer Turnier System für \ac{MtG}, welches in Python geschrieben ist.
 
 \subsubsection{Profiling}
 Mit einem \emph{Profiler} können verschiedene Werte wie \emph{Ausführungszeit} oder \emph{Speicherverbrauch} gemessen werden \cite{doglio2015mastering}. Um vergleichen zu können, wie gut die Datenbanksysteme in den einzelnen Testfällen abschneiden, werden die Ausführungszeit und der Speicherverbrauch gemessen. 
 
-Für die Ausführungszeit kann eine einfache Timer-Klasse\footnote{https://www.huyng.com/posts/python-performance-analysis} benutzt werden. Um den Speicherverbrauch zu messen wird die Python-Bibliothek psutil benutzt\footnote{http://fa.bianp.net/blog/2013/different-ways-to-get-memory-consumption-or-lessons-learned-from-memory\_profiler/}, da diese eine einfache und plattformübergreifende Methode bietet den Speicherverbrauch auszulesen.
+Für die Ausführungszeit wird eine einfache Timer-Klasse\footnote{\url{https://www.huyng.com/posts/python-performance-analysis}} benutzt, welche die Zeit mittels der \verb|datetime| Bibliothek misst. Um den Speicherverbrauch zu messen wird die Python-Bibliothek \verb|psutil| benutzt\footnote{\url{http://fa.bianp.net/blog/2013/different-ways-to-get-memory-consumption-or-lessons-learned-from-memory_profiler}}, da diese eine einfache und plattformübergreifende Methode bietet den Speicherverbrauch auszulesen.
