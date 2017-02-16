@@ -678,22 +678,68 @@ Die Klasse \verb|Faker.SetProvider| hat die folgenden Schnittstellen:
 %
 % Schnittstellenrealisierung -> Interaktionsdiagramm
 %
-\subsubsection{Fetch} %TODO: Change title
-Fetch decks from mtgtop8.com  %TODO: Change description
+\subsubsection{Decks herunterladen}
+Lade Decks von \url{http://mtgtop8.com} herunter, dabei ist \verb|path| ist die Pfadangabe zum Verzeichnis in dem die Decks gespeichert werden sollen. \verb|start| und \verb|end| geben die Seitennummern an auf denen gestartet und gestoppt werden soll.
 
 \begin{figure}[H]
     \myfloatalign
-    \includegraphics[width=\textwidth]{gfx/MtGDeepAnalysis/fetch.eps}
-    \caption{Sequenzdiagramm Fetch} %TODO: Change caption
+    \includegraphics[width=\textwidth]{gfx/MtGDeepAnalysis/cli_fetch.eps}
+    \caption{Sequenzdiagramm: Decks herunterladen}
     \label{fig:seq:fetch}
 \end{figure}
 
-\subsubsection{Build} %TODO: Change title
-Build mtgtop8 %TODO: Change description
+\subsubsection{Generieren der Turniere}
+Generiere \verb|n| Turniere und speichere diese als \verb|tournaments.csv| in dem Verzeichnis unter \verb|path|.
 
 \begin{figure}[H]
     \myfloatalign
-    \includegraphics[width=\textwidth]{gfx/MtGDeepAnalysis/build.eps}
+    \includegraphics[width=1.1\textwidth]{gfx/MtGDeepAnalysis/cli_generate.eps}
+    \caption{Sequenzdiagramm: Generierung der Turniere}
+    \label{fig:seq:generate}
+\end{figure}
+
+
+\subsubsection{Importieren der Daten}
+Erstellen des Datenbankschemas und importieren der Daten.
+
+\begin{figure}[H]
+    \myfloatalign
+    \includegraphics[width=1.1\textwidth]{gfx/MtGDeepAnalysis/cli_build.eps}
     \caption{Sequenzdiagramm build} %TODO: Change caption
     \label{fig:seq:build}
 \end{figure}
+
+\subsubsection{Ausführen eines Tests}
+Ausführen des Testfalls mit Namen \verb|test|. Falls \verb|queries == True| sein sollte, wird nicht der Testfall ausgeführt sondern die verwendeten SQL- und Cypher-Abfragen auf der Konsole ausgegeben.
+
+\begin{figure}[H]
+    \myfloatalign
+    \includegraphics[width=\textwidth]{gfx/MtGDeepAnalysis/cli_run.eps}
+    \caption{Sequenzdiagramm: Ausführen eines Test}
+    \label{fig:seq:run}
+\end{figure}
+
+
+\subsubsection{Skalierung}
+Generiert und importiert Dummy-Daten, um die Skalierbarkeit der einzelnen Testfälle zu testen.
+
+\begin{figure}[H]
+    \myfloatalign
+    \includegraphics[width=1.1\textwidth]{gfx/MtGDeepAnalysis/cli_scale.eps}
+    \caption{Sequenzdiagramm: Skalierung}
+    \label{fig:seq:scale}
+\end{figure}
+
+\subsubsection{Auflisten der vorhandenen Testfälle} 
+Listet die vorhandenen Testfälle mit Namen und Beschreibung auf und gibt diese auf der Konsole aus.
+
+\begin{figure}[H]
+    \myfloatalign
+    \includegraphics[width=.65\textwidth]{gfx/MtGDeepAnalysis/cli_list.eps}
+    \caption{Sequenzdiagramm: Auflisten der vorhandenen Testfälle}
+    \label{fig:seq:list}
+\end{figure}
+
+
+
+
