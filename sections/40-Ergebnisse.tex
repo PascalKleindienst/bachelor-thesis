@@ -33,9 +33,9 @@
 \end{table}
 In \autoref{tab:req.tests} befindet sich eine Auflistung der Probleme die in \autoref{ch:analyse} beschrieben wurden und welche Testfälle erforderlich sich, um die Anforderung zu überprüfen.
 
-Jeder Test wurde 1000mal sowohl auf Neo4j als auch auf MySQL/MariaDB ausgeführt, um den Einfluss von Messfehlern zu reduzieren \emph{(Gesetz der Großen Zahlen)}. Bei jedem Test wurde die Ausführungszeit in Millisekunden (ms) und der Speicherverbrauch in MByte gemessen. Um sicherzugehen, dass Caching oder Systemprozesse die Ergebnisse nicht beeinflussen, wurden die 10 längsten und kürzesten Zeiten verworfen. Die übriggebliebenen Werte wurden gemittelt und die Standardabweichung wurde berechnet, um zu schauen wie groß die Fehlergrenze ist. 
+Jeder Test wurde 1000mal sowohl auf Neo4j als auch auf MySQL/MariaDB ausgeführt, um den Einfluss von Messfehlern zu reduzieren \emph{(Gesetz der Großen Zahlen)}. Bei jedem Test wurde die Ausführungszeit in Millisekunden (ms) und der Speicherverbrauch in MByte gemessen. Um sicherzugehen, dass Caching oder Systemprozesse die Ergebnisse nicht beeinflussen, wurden die 10 längsten und kürzesten Zeiten verworfen. Die übriggebliebenen Werte wurden gemittelt und die Standardabweichung wurde berechnet, um zu schauen wie groß die Fehlergrenzen sind. 
 
-Um zu erfahren wie gut die beiden Datenbanken skalieren, wurden außerdem die Testfälle stückweise auf größeren Datensätzen ausgeführt. Diese Datensätze wurden zufällig generiert und basieren nicht auf echten Daten. Als Staffelung für die Tests wurden \emph{100.000, 250.000, 500.000 und 1.000.000} Karten/Turniere gewählt.
+Um zu erfahren wie gut die beiden Datenbanken skalieren, wurden außerdem die Testfälle stückweise auf größeren Datensätzen ausgeführt. Diese Datensätze wurden zufällig generiert und basieren nicht auf echten Daten. Als Staffelung für die Tests wurden \emph{100.000, 250.000, 500.000 und 1.000.000} Karten gewählt.
 
 \section{Beschreibung und Motivation der Testfälle}
 %% Tests in normaler Sprache:
@@ -43,7 +43,7 @@ Um zu erfahren wie gut die beiden Datenbanken skalieren, wurden außerdem die Te
 %%  -> guter test, da viele Verknpüfungen
 
 \subsection{Testfall 1: Schlüsselwort-Fähigkeit}
-Eine einfache Suche, um die ersten 300 Karten mit dem Schlüsselwort-Fähigkeit \emph{Flying} zu erhalten. Wie in \autoref{fig:uml:schema} zu sehen ist, werden die Fähigkeiten in MySQL/MariaDB in einer eigenen Tabelle gespeichert. In Neo4j hingegen können diese als Attribut von \emph{Card} hinterlegt werden \emph{(siehe \autoref{fig:graph:schema})}, da Neo4j den Datentyp \emph{Array} unterstützt. Mit diesem Test lässt sich also vergleichen wie gut sich Arrays im Vergleich zu joins beim durchsuchen eignen.
+Eine einfache Suche, um die ersten 300 Karten mit dem Schlüsselwort-Fähigkeit \emph{Flying} zu erhalten. Wie in \autoref{fig:uml:schema} zu sehen ist, werden die Fähigkeiten in MySQL/MariaDB in einer eigenen Tabelle gespeichert. In Neo4j hingegen können diese als Attribut von \emph{Card} hinterlegt werden \emph{(siehe \autoref{fig:graph:schema})}, da Neo4j den Datentyp \emph{Array} unterstützt. Mit diesem Test lässt sich also vergleichen wie gut sich Arrays im Vergleich zu \verb|JOINS| beim durchsuchen eignen.
     
 \subsection{Testfall 2: Textsuche}
 Eine einfache Suche nach den Karten, die den Namen \emph{Forest} enthalten und die entweder von \emph{Aleksi Briclot} oder \emph{John Avon} gezeichnet wurden. Da Karten anhand ihres Namens identifiziert werden, ist es sinnvoll zu testen wie gut sich eine Textsuche in den beiden Datenbanksystemen funktioniert.
@@ -64,16 +64,14 @@ Eine komplexe Suche nach Karten, welche bestimmte Kriterien erfüllen \emph{(sie
 Berechnung des Matchup für den Deck-Typ \emph{Bant}. Es werden alle Matches analysiert an denen ein Deck vom Typ \emph{Bant} beteiligt war und überprüft ob das Deck gewonnen oder verloren hat. Die Ergebnisse werden dann anhand der gegnerischen Deck-Typen gruppiert und geordnet. Insgesamt gibt es im Standard-Testfall 1000 Turniere mit etwas über 6500 Decks, die jeweils zwischen 2 und 6 Matches enthalten.  
 
 \subsection{Testfall 5: Top 10 Decks}
-Für jedes Deck wird das Verhältnis zwischen den gewonnen und verlorenen Matches berechnet und dann der Größe nach sortiert und die ersten 10 Decks gewählt. Je höher der Wert ist, desto besser ist das Deck unabhängig von der Anzahl der gespielten Matches. Insgesamt gibt es im Standard-Testfall 1000 Turniere mit etwas über 6500 Decks, die jeweils zwischen 2 und 6 Matches enthalten. 
+Für jedes Deck wird das Verhältnis zwischen den gewonnen und verlorenen Matches berechnet und dann der Größe nach sortiert und die ersten 10 Decks gewählt. Je höher der Wert ist, desto besser ist das Deck unabhängig von der Anzahl der gespielten Partien. Insgesamt gibt es im Standard-Testfall 1000 Turniere mit etwas über 6500 Decks, die jeweils zwischen 2 und 6 Matches enthalten. 
 
 \section{Übersicht und Bewertung der erzielten Ergebnisse}
 %%
 %% Graphen! + Berwertung (erwaret/unwartet, weil | DB X besser geeignet weil)
 %%
 \subsection{Laufzeit}
-Die gemessenen Laufzeiten samt ihrer Standardabweichung sind in \autoref{fig:plot.runtime} als Fehlerbalkendiagramm dargestellt.
-Wie zu erwarten war Neo4j in Testfall 4 schneller als die SQL-Abfrage mit JOINS. Überraschenderweise war Neo4j auch in Testfall 2 etwas schneller als MySQL/MariaDB, obwohl aufgrund der langjährigen Optimierungen der Textsuche in MySQL/MariaDB zu erwarten war, dass dieser schneller sei.
-Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL/MariaDB liegt vermutlich daran, dass als Datentyp Arrays für \emph{color}, \emph{abilities} und \emph{types} benutzt wurde. Anscheinend ist in Neo4j die Suche innerhalb eines Arrays langsamer als die Suche mit einem JOIN in SQL.
+Die gemessenen Laufzeiten samt ihrer Standardabweichung sind in \autoref{fig:plot.runtime} als Fehlerbalkendiagramm dargestellt. Wie zu erwarten war ist Neo4j in Testfall 4 schneller als die SQL-Abfrage mit \verb|JOINS|. Überraschenderweise war Neo4j auch in Testfall 2 etwas schneller als MySQL/MariaDB, obwohl aufgrund der langjährigen Optimierungen der Textsuche in MySQL/MariaDB zu erwarten war, dass diese schneller sei. Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL/MariaDB liegt vermutlich daran, dass als Datentyp Arrays für \emph{color}, \emph{abilities} und \emph{types} benutzt wurden. Anscheinend ist in Neo4j die Suche innerhalb eines Arrays langsamer als die Suche mit einem \verb|JOIN| in SQL.
 
 \begin{figure}[t]
     \myfloatalign
@@ -118,7 +116,7 @@ Der Grund dafür, dass Neo4j in den Testfällen 1 und 3 langsamer ist als MySQL/
 %\end{table}
 
 \subsection{Skalierbarkeit}
-Wie in \autoref{fig:plot.scaling.testcase1} zu sehen ist, skalieren sowohl Neo4j als auch MySQL/MariaDB gut, aber auch hier zeigt sich, dass Neo4j in allen gemessenen Größen langsamer ist. Die Steigung ist bei beiden Datenbanken ungefähr gleich. Die Vermutung, dass die Suche in Arrays langsamer ist als mit \verb|JOINS| bestätigt sich in Testfall 3.
+Wie in \autoref{fig:plot.scaling.testcase1} zu sehen ist, skalieren sowohl Neo4j als auch MySQL/MariaDB gut, aber auch hier zeigt sich, dass Neo4j in allen gemessenen Punkten langsamer ist. Die Steigung ist bei beiden Datenbanken ungefähr gleich. Die Vermutung, dass die Suche in Arrays langsamer ist als mit \verb|JOINS| bestätigt sich in Testfall 3.
 
 \begin{figure}[t]
     \myfloatalign
@@ -174,7 +172,7 @@ In Testfall 2 bestätigt sich, dass MySQL/MariaDB bei der Textsuche optimierter 
     \label{fig:plot.scaling.testcase2}
 \end{figure}
 
-Wie in  \autoref{fig:plot.scaling.testcase3} zu sehen ist, hat die Laufzeit bei Neo4j ein lineares Wachstum, wohingegen sie bei MySQL/MariaDB relativ konstant bleibt: bei doppelter Menge an Karten, verdoppelt \emph{(ungefähr)} sich die Laufzeit in Neo4j. Es bietet sich an zu überprüfen, ob mit einem anderen Schema, welches auf Arrays verzichtet, Neo4j eine bessere Laufzeit und Skalierbarkeit hat.
+Wie in  \autoref{fig:plot.scaling.testcase3} zu sehen ist, hat die Laufzeit bei Neo4j ein lineares Wachstum, wohingegen sie bei MySQL/MariaDB relativ konstant bleibt: bei doppelter Menge an Karten, verdoppelt sich \emph{(ungefähr)} die Laufzeit in Neo4j. Es bietet sich an zu überprüfen, ob mit einem anderen Schema, welches auf Arrays verzichtet, Neo4j eine bessere Laufzeit und Skalierbarkeit erreicht.
  
  \begin{figure}[t]
      \myfloatalign
@@ -230,7 +228,7 @@ In \autoref{fig:plot.scaling.testcase4} zeigt sich, dass die Laufzeit der SQL-Ab
     \label{fig:plot.scaling.testcase4}
 \end{figure}
 
-Allerdings gilt dies nicht für Testfall 5, denn \autoref{fig:plot.scaling.testcase5} zeigt, dass hier Neo4j langsamer ist als MySQL/MariaDB. Sowohl MySQL/MariaDB als auch Neo4j haben ein lineares Wachstum, auch wenn es bei Neo4j nach einem beschränkten Wachstum aussieht. Ein beschränktes Wachstum erscheint aber für die Laufzeit nicht sinnvoll. Des Weiteren hat Neo4j ein stärkeres Wachstum als MySQL/MariaDB. Die Tatsache, dass beide Datenbanken bei den Abfragen deutlich langsamer sind, ist in diesem Testfall vernachlässigbar. Es ist ausreichend die besten Decks nur einmal am Tag oder wenn ein neues Turnier hinzugefügt wurde zu berechnen und das Ergebnis zu speichern: wenn kein neues Turnier hinzugefügt wird, ändert sich auch nicht die Top 10 Liste. Aus diesem Grund muss die Abfrage nicht in Echtzeit geschehen sondern kann durchaus einige Sekunden in Anspruch nehmen.
+Allerdings gilt dies nicht für Testfall 5, denn \autoref{fig:plot.scaling.testcase5} zeigt, dass hier Neo4j langsamer ist als MySQL/MariaDB. Sowohl MySQL/MariaDB als auch Neo4j haben ein lineares Wachstum, auch wenn es bei Neo4j nach einem beschränkten Wachstum aussieht. Ein beschränktes Wachstum erscheint aber für die Laufzeit nicht sinnvoll. Des Weiteren hat Neo4j ein stärkeres Wachstum als MySQL/MariaDB. Die Tatsache, dass beide Datenbanken bei den Abfragen deutlich langsamer sind, ist in der Praxis vernachlässigbar. Es ist ausreichend die besten Decks nur einmal am Tag oder wenn ein neues Turnier hinzugefügt wurde zu berechnen und das Ergebnis zu speichern: wenn kein neues Turnier hinzugefügt wird, ändert sich auch nicht die Top 10 Liste. Aus diesem Grund muss die Abfrage nicht in Echtzeit geschehen, sondern kann durchaus einige Sekunden in Anspruch nehmen.
 
 
 \begin{figure}[t]

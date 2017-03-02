@@ -11,7 +11,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Um das Daten-Schema für die relationale Datenbank darzustellen, wird \ac{UML} verwendet. Die Vorteile von \ac{UML} liegen im Gegensatz zum \ac{ER-Modell} darin, dass es weit verbreitet, standardisiert ist und sich gut für \ac{OOP} eignet \cite{teorey2011database}. In \autoref{fig:uml:schema} befindet sich das Daten-Schema für die relationale Datenbank.
 
-Wie viele Graph-Datenbanken nutzt auch Neo4j das Property-Graph-Modell um Daten darzustellen  \cite{lal2015neo4j}. Dieses Modell ist ein Untertyp des mathematischen Graph-Modells. Property-Graph-Modelle sind einfacher, aussagekräftiger und geben Beziehungen explizit an  \cite{lal2015neo4j}. \ac{RDBMS} verwenden Fremdschlüssel, um Beziehungen implizit anzugeben \cite{lal2015neo4j}. In \autoref{fig:graph:schema} befindet sich ein möglicher Ansatz für ein Schema.
+Wie viele Graph-Datenbanken nutzt auch Neo4j das Property-Graph-Modell um Daten darzustellen  \cite{lal2015neo4j}. Dieses Modell ist ein Untertyp des mathematischen Graph-Modells. Property-Graph-Modelle sind einfacher, aussagekräftiger und geben Beziehungen explizit an \cite{lal2015neo4j}. \ac{RDBMS} verwenden Fremdschlüssel, um Beziehungen implizit anzugeben \cite{lal2015neo4j}. In \autoref{fig:graph:schema} befindet sich ein möglicher Ansatz für ein Schema.
 
 \begin{figure}[H]
     \myfloatalign
@@ -48,7 +48,7 @@ Wie viele Graph-Datenbanken nutzt auch Neo4j das Property-Graph-Modell um Daten 
     Enthält das Grundgerüst, welches von den meisten anderen Paketen benutzt wird
      
     \item[Scrapers]  \hfill \\
-    Ist dafür zuständig Decks von mtgtop8 \footnote{http://mtgtop8.com/} herunterzuladen, um einen Datensatz für Decks zu erstellen
+    Ist dafür zuständig Decks von mtgtop8 \footnote{\url{http://mtgtop8.com/}} herunterzuladen, um einen Datensatz für Decks zu erstellen
     
     \item[Transformations]  \hfill \\
     Ist zuständig für das Transformieren von Daten in eine vorgegebene Datenstruktur
@@ -81,7 +81,6 @@ Die Komponente \verb|Tests| nutzt die folgenden Schnittstellen:
 Die Komponente \verb|Scrapers| nutzt die folgenden Schnittstellen:
 \begin{description}
     \item[Foundation] wird genutzt, um auf die Konfiguration zuzugreifen
-    
     \item[Builder] wird genutzt, um die Decks in \ac{CSV} Dateien zu speichern
 \end{description}
 

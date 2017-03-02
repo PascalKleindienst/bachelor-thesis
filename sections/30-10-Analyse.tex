@@ -2,17 +2,12 @@
 %****************************************************
 \section{Analyse der Anforderungen}\label{ch:analyse}
 %****************************************************
-
 \subsection{Kartensuche}
 %- Karte:
 %    Suche nach verschiedenen Attributen oft auch kombiniert. zb nur Künstler X , alle Karten vom Typ X die in Edition Y und Farbe Z haben
 %    -> Verknüfung der verschiedenen Attribute = Relationship/Beziehungen
 %    -> Echtzeit (Web)
-Aufgrund der großen Anzahl an Karten \emph{(>15.000 \footnote{basierend auf \url{mtgjson.com}})} ist eine Suchfunktion hervorragend geeignet, um bestimmte oder ähnliche Karten zu finden. Wie in \ref{ch:grundlagen:aufbau} beschrieben, enthält eine Karte viele verschiedenen Attribute. Daher ist es sinnvoll bei einer Suchfunktion die \emph{Verknüpfung dieser Attribute} zu erlauben, sodass zum Beispiel nach allen Karten eines Künstlers, die in einem bestimmten Set erschienen sind, gesucht werden kann. 
-
-Da eine solche Suchfunktion oftmals webbasiert ist, muss es möglich sein, dass ein Benutzer die Ergebnisse in Echtzeit erhält.
-
-
+Aufgrund der großen Anzahl an Karten \emph{(>15.000 \footnote{basierend auf \url{mtgjson.com}})} ist eine Suchfunktion hervorragend geeignet, um bestimmte oder ähnliche Karten zu finden. Wie in \ref{ch:grundlagen:aufbau} beschrieben, enthält eine Karte viele verschiedenen Attribute. Daher ist es sinnvoll bei einer Suchfunktion die \emph{Verknüpfung dieser Attribute} zu erlauben, sodass zum Beispiel nach allen Karten eines Künstlers, die in einem bestimmten Set erschienen sind, gesucht werden kann. Da eine solche Suchfunktion oftmals webbasiert ist, muss es möglich sein, dass ein Benutzer die Ergebnisse in Echtzeit erhält.
 
 \subsection{Deckbau}
 %- Deck Analyse:
@@ -22,8 +17,7 @@ Da eine solche Suchfunktion oftmals webbasiert ist, muss es möglich sein, dass 
 %    -> Echtzeit (Web):
 Wie in \ref{ch:grundlagen:deck} zu sehen ist, gibt es verschiedene Richtlinien die beim Deckbau zu beachten sind, sofern man ein gutes Deck erstellen möchte. Diese Richtlinien können sich jedoch abhängig vom Deck-Typen stark unterscheiden. Ein hilfreiches Werkzeug beim Deckbau ist daher die Deck-Analyse.
 
-Die Berechnung der Kostenverteilung, das heißt die Manakurve, hilft dabei Karten zu wählen die der Strategie des Decks entsprechen. Bei einem Aggro-Deck kann man so im Auge behalten eine niedrige Manakurve zu haben, um nicht zu viele Karten mit hohen Kosten in das Deck aufzunehmen.
-Auch die Verteilung der einzelnen Kartentypen, das heißt die Anzahl der Kreaturen, Zauber, usw., ist für verschiedene Deck-Typen wichtig. So ist für ein Aggro-Deck eine hohe Anzahl an Kreaturen wichtig, wohingegen ein Control-Deck eher eine hohe Anzahl an Zaubern enthält. Da sich viele Decks aber nicht nur auf eine Farbe beschränken, ist es auch wichtig zu wissen, wie die Farben im Deck verteilt sind, um so die Manaquellen im Deck entsprechend zu verteilen. 
+Die Berechnung der Kostenverteilung, das heißt die Manakurve, hilft dabei Karten zu wählen die der Strategie des Decks entsprechen. Bei einem Aggro-Deck kann man so im Auge behalten eine niedrige Manakurve zu haben, um nicht zu viele Karten mit hohen Kosten in das Deck aufzunehmen. Auch die Verteilung der einzelnen Kartentypen, das heißt die Anzahl der Kreaturen, Zauber, usw., ist für verschiedene Deck-Typen wichtig. So ist für ein Aggro-Deck eine hohe Anzahl an Kreaturen wichtig, wohingegen ein Control-Deck eher eine hohe Anzahl an Zaubern enthält. Da sich viele Decks aber nicht nur auf eine Farbe beschränken, ist es auch wichtig zu wissen, wie die Farben im Deck verteilt sind, um so die Manaquellen im Deck entsprechend zu verteilen. 
 
 Beim Deckbau werden in der Regel nur die Anzahl der Karte im Deck und ihr Name angegeben. Aus diesem Grund ist es wichtig den Inhalt des Decks mit den Karten-Daten zu verknüpfen, um Zugriff auf die benötigten Attribute zu haben. Außerdem sollte auch hier die Analyse die Ergebnisse in Echtzeit liefern, damit sich die Funktion für webbasierte Anwendungen eignet.
 
@@ -33,7 +27,6 @@ Beim Deckbau werden in der Regel nur die Anzahl der Karte im Deck und ihr Name a
 %    * Erfolgreichster Spieler / Deck
 %    -> Verknüpfung von Decks mit Turnier-Matches und Spielern
 %    -> Echtzeit (Web)
-Sowohl für professionelle Turnierspieler als auch für Amateure ist die Analyse vergangener Turniere wichtig, um ihre Decks bestmöglich an potentiell überlegende Decks anzupassen. Dazu ist die Berechnung des Match-Ups für ein Deck-Typ wichtig. Dazu müssen die einzelnen Ergebnisse einer Runde eines Turniers mit den Decks verknüpft werden.
+Sowohl für professionelle Turnierspieler als auch für Amateure ist die Analyse vergangener Turniere wichtig, um ihre Decks bestmöglich an potentiell überlegende Decks anzupassen. Dazu ist die Berechnung des Matchups für einen Deck-Typ wichtig. Dazu müssen die einzelnen Ergebnisse einer Runde eines Turniers mit den Decks verknüpft werden und das Verhältnis zwischen gewonnenen und verlorenen Spielen berechnet werden.
 
 Ein weitere interessante Information ist die des erfolgreichsten Spielers oder Deck(-Typen) über eine Auswahl an Turnieren. Wie in den vorherigen Fällen ist auch hier eine webbasierte Anwendung wünschenswert und damit die Berechnung der Resultate in Echtzeit.
-
